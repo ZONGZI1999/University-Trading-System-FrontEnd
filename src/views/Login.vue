@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="loginForm" :model="form" :rules="rules" label-width="80px" class="login-box">
-      <h3 class="login-title">Please Login</h3>
+      <h3 class="login-title">Login</h3>
       <el-form-item label="Student ID" prop="username" label-width="100px">
         <el-input type="text" placeholder="Please Enter Your Student ID" v-model="form.username"/>
       </el-form-item>

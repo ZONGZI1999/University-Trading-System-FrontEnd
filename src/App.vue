@@ -9,10 +9,10 @@
           <el-col :span="9">UTS Logo</el-col>
           <el-col :span="9">search</el-col>
         </el-row>
-        <el-header style="padding: 0px">
+        <el-header style="padding: 0px;">
           <el-menu
             :default-active="activeIndex2"
-            class="el-menu-demo"
+            class="el-menu-demo action"
             mode="horizontal"
             @select="handleSelect"
             background-color="#545c64"
@@ -70,5 +70,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 </style>
