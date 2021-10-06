@@ -15,6 +15,12 @@ const routes = [
     component: () => import('../views/OrderList.vue')
   },
   {
+    path: '/ItemList',
+    name: 'Item List',
+    component: () => import('../views/ItemResultList.vue')
+
+  },
+  {
     path: '/Order',
     component: () => import('../views/order/Order.vue'),
     children:[
