@@ -4,10 +4,21 @@
       <div>
         <el-row
           :gutter="18"
-          style="padding-top: 50px; padding-bottom: 50px; padding-left: 20%"
+          style="padding-top: 20px; padding-bottom: 10px; padding-left: 20%"
         >
-          <el-col :span="9">UTS Logo</el-col>
-          <el-col :span="9">search</el-col>
+          <el-col :span="9">
+            <el-image
+            style="width: 300px; height: 100px"
+            :src="imgUrl"
+            fit="fill"></el-image>
+          </el-col>
+          <el-col :span="9" >
+            <el-container>
+                <el-input placeholder="Please Enter Keywords" v-model="searchKeyword" class="input-with-select">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+              </el-input>
+            </el-container>
+          </el-col>
         </el-row>
         <el-header style="padding: 0px;">
           <el-menu
@@ -19,9 +30,9 @@
             text-color="#fff"
             active-text-color="#ffd04b"
           >
-            <el-menu-item index="1">处理中心</el-menu-item>
+            <el-menu-item index="1">Main</el-menu-item>
             <el-submenu index="2">
-              <template slot="title">我的工作台</template>
+              <template slot="title">My Center</template>
               <el-menu-item index="2-1">选项1</el-menu-item>
               <el-menu-item index="2-2">选项2</el-menu-item>
               <el-menu-item index="2-3">选项3</el-menu-item>
@@ -32,12 +43,6 @@
                 <el-menu-item index="2-4-3">选项3</el-menu-item>
               </el-submenu>
             </el-submenu>
-            <el-menu-item index="3" disabled>消息中心</el-menu-item>
-            <el-menu-item index="4"
-              ><a href="https://www.ele.me" target="_blank"
-                >订单管理</a
-              ></el-menu-item
-            >
           </el-menu>
         </el-header>
       </div>
@@ -60,6 +65,8 @@ export default {
     return {
       activeIndex: "1",
       activeIndex2: "1",
+      searchKeyword: '',
+      imgUrl: require("./assets/logo.png")
     };
   },
   methods: {

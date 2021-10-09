@@ -45,13 +45,22 @@
               <el-button icon="el-icon-time" size="mini" slot="reference">Timeline</el-button>
             </el-popover>
         </template>
+        <!-- Current State -->
+        <el-descriptions-item :span="step < 2 ? 2 : 1">
+          <template slot="label">
+            <div class="item-label">Current State</div>
+          </template>
+          <div class="item-label">
+            11111
+          </div>
+        </el-descriptions-item>
         <!-- Order No -->
         <el-descriptions-item :span="step < 2 ? 2 : 1">
           <template slot="label">
             <div class="item-label">Order No.</div>
           </template>
           <div class="item-label">
-            11111
+            {{orderInfo.orderDetails.orderNo}}
           </div>
         </el-descriptions-item>
         <!-- Payment -->
@@ -60,7 +69,7 @@
             <div class="item-label">Payment</div>
           </template>
           <div class="item-label">
-            Balance
+            {{orderInfo.payment.paymentMethod}}
           </div>
         </el-descriptions-item>
         <!-- Pay No. -->
@@ -69,16 +78,25 @@
             <div class="item-label">Pay No.</div>
           </template>
           <div class="item-label">
-            aaaaaa
+            {{orderInfo.payment.paymentNo}}
+          </div>
+        </el-descriptions-item>
+        <!-- Buyer -->
+        <el-descriptions-item :span="2">
+          <template slot="label">
+            <div class="item-label">Buyer</div>
+          </template>
+          <div class="item-label">
+            {{orderInfo.orderDetails.buyer}}
           </div>
         </el-descriptions-item>
         <!-- Seller -->
-        <el-descriptions-item :span="step < 2 ? 2 : 1">
+        <el-descriptions-item :span="2">
           <template slot="label">
             <div class="item-label">Seller</div>
           </template>
           <div class="item-label">
-            Zekizheng
+            {{orderInfo.orderDetails.seller}}
           </div>
         </el-descriptions-item>
         <!-- Seller Evaluation -->
@@ -87,7 +105,7 @@
             <div class="item-label">Seller Evaluation</div>
           </template>
           <div class="item-label">
-            Zekizheng
+            {{orderInfo.evaluation.seller}}
           </div>
         </el-descriptions-item>
         <!-- Buyer Evaluation -->
@@ -96,14 +114,14 @@
             <div class="item-label">Buyer Evaluation</div>
           </template>
           <div class="item-label">
-            Zekizheng
+            {{orderInfo.evaluation.buyer}}
           </div>
         </el-descriptions-item>
       </el-descriptions>
     </el-container>
 
     <!--Delivery Address-->
-    <el-container>
+    <el-container style="margin-top: 20px">
       <el-descriptions  :column="6" style="width: 100%" border>
         <template slot="title">
           Delivery Address
@@ -111,45 +129,45 @@
             v-if="showModule.addressSelectButton"
             type="primary"
             size="small"
-            @click="dialogTableVisible = true"
+            @click="setDeliveryAddressIsShow = true"
             >Select</el-button
           >
         </template>
-        <el-descriptions-item :span="2" v-if="deliveryInfo.name != ''">
+        <el-descriptions-item :span="2" v-if="orderInfo.delivery.address.name != ''">
           <template slot="label">
             <div class="item-label">Name</div>
           </template>
-          {{deliveryInfo.name}}
+          {{orderInfo.delivery.address.name}}
         </el-descriptions-item>
-        <el-descriptions-item :span="2" v-if="deliveryInfo.phone != ''">
+        <el-descriptions-item :span="2" v-if="orderInfo.delivery.address.phone != ''">
           <template slot="label">
             <div class="item-label">Phone No.</div>
           </template>
-          {{deliveryInfo.phone}}
+          {{orderInfo.delivery.address.phone}}
         </el-descriptions-item>
-        <el-descriptions-item :span="2" v-if="deliveryInfo.address != ''">
+        <el-descriptions-item :span="2" v-if="orderInfo.delivery.address.address != ''">
           <template slot="label">
             <div class="item-label">Delivery Address</div>
           </template>
-          {{deliveryInfo.address}}
+          {{orderInfo.delivery.address.address}}
         </el-descriptions-item>
         <el-descriptions-item v-if="showModule.deliveryInfo" :span="2">
           <template slot="label">
             <div class="item-label">Delivery Time</div>
           </template>
-          None
+          {{orderInfo.delivery.trackingInfo.deliveryTime}}
         </el-descriptions-item>
         <el-descriptions-item v-if="showModule.deliveryInfo"  :span="2">
           <template slot="label">
             <div class="item-label">Delivery Company</div>
           </template>
-          None
+          {{orderInfo.delivery.trackingInfo.deliveryCompany}}
         </el-descriptions-item>
         <el-descriptions-item v-if="showModule.deliveryInfo" :span="2">
           <template slot="label">
             <div class="item-label">Tracking No.</div>
           </template>
-          None
+          {{orderInfo.delivery.trackingInfo.trackingNo}}
         </el-descriptions-item>
       </el-descriptions>
     </el-container>
@@ -159,8 +177,7 @@
       <div>
         <el-row>
           <el-col :span="4">
-            <div class="block">
-              <span class="demonstration"></span>
+            <div>
               <el-image
                 src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
                 fit="cover"
@@ -216,7 +233,7 @@
     <!-- Choose Delivery Address -->
     <el-dialog
       title="Choose a Delivery Address"
-      :visible.sync="dialogTableVisible"
+      :visible.sync="setDeliveryAddressIsShow"
     >
       <el-table
         :data="
@@ -265,6 +282,22 @@
       </el-table>
     </el-dialog>
 
+    <!-- Set Delivery Info -->
+    <el-dialog title="Set Delivery Info" :visible.sync="setDeliveryInfoIsShow">
+      <el-form :model="orderInfo.delivery.trackingInfo">
+        <el-form-item label="Delivery Company" label-width="160px">
+          <el-input v-model="orderInfo.delivery.trackingInfo.deliveryCompany" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Tracking No" label-width="160px">
+          <el-input v-model="orderInfo.delivery.trackingInfo.trackingNo" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setDeliveryInfoIsShow = false">取 消</el-button>
+        <el-button type="primary" @click="setDeliveryInfoIsShow = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
     <!-- Test Button -->
     <el-button type="primary" @click="stepInc">+</el-button>
     <el-button type="success" @click="stepDes">-</el-button>
@@ -274,9 +307,6 @@
 <style scoped>
 .text {
   font-size: 14px;
-}
-.el-container {
-  margin-top: 30px;
 }
 .item {
   margin-bottom: 10px;
@@ -323,6 +353,33 @@
 export default {
   data() {
     return {
+      orderInfo:{
+        orderDetails:{
+          orderNo:'',
+          buyer: '',
+          seller: ''
+        },
+        payment:{
+          paymentNo:'',
+          paymentMethod:''
+        },
+        evaluation:{
+          buyer:'',
+          seller:''
+        },
+        delivery:{
+          address:{
+            name: '',
+            phone: '',
+            address: ''
+          },
+          trackingInfo:{
+            deliveryTime: '',
+            deliveryCompany: '',
+            trackingNo: ''
+          }
+        }
+      },
       addressData: [
         {
           name: "Zekizheng",
@@ -335,11 +392,6 @@ export default {
           address: "Jalan Sunsuria, TEST AREA Bandar Sunsuria, 43900 Sepang, Selangor Darul Ehsan, Malaysia",
         },
       ],
-      deliveryInfo: {
-        name: "",
-        phone: "",
-        address: ""
-      },
       showModule: {
         addressSelectButton: true,
         deliveryInfo: false,
@@ -366,8 +418,8 @@ export default {
       }],
       elStep: 0,
       search: "",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
+      setDeliveryAddressIsShow: false,
+      setDeliveryInfoIsShow: false,
       formLabelWidth: "120px",
       remark: "",
       step: 0,
@@ -382,10 +434,10 @@ export default {
     selectAddress(index, row){
       console.log("select address");
       console.log(index, row);
-      this.deliveryInfo.name = row.name
-      this.deliveryInfo.phone = row.phone
-      this.deliveryInfo.address = row.address
-      this.dialogTableVisible = false
+      this.orderInfo.delivery.address.name = row.name
+      this.orderInfo.delivery.address.phone = row.phone
+      this.orderInfo.delivery.address.address = row.address
+      this.setDeliveryAddressIsShow = false
       this.$message({
         message: 'Set address successfully!',
         type: 'success'
@@ -411,12 +463,9 @@ export default {
     },
     button1Click(){
       console.log("Button 1 Click");
-      this.buttonLoading.button1 = true
-      var that = this
-      setTimeout(function() {
-        that.step++
-        that.buttonLoading.button1 = false
-      },1000)
+      if(this.step == 2){
+        this.setDeliveryInfoIsShow = true
+      }
       
     },
     button2Click(){
@@ -448,7 +497,7 @@ export default {
           this.showModule.addressSelectButton = false;
           this.showModule.deliveryInfo = false;
           this.textIsReadOnly = true
-          this.buttonName.button1 = "Ask";
+          this.buttonName.button1 = "Set Delivery Info";
           this.buttonName.button2 = "Cancel Order";
           break;
         case 3:

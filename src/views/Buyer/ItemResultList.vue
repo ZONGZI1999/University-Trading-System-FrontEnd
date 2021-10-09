@@ -59,7 +59,7 @@
   export default {
     data() {
       return {
-        orderList: [
+        orderList: [ // store all result
             {
                 pic: {
                     main: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
@@ -71,8 +71,7 @@
                 price: '$ 10.00',
             },
         ],
-        showList: [
-
+        showList: [ // use to store result showing to user
         ]
       }
     },

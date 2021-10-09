@@ -1,25 +1,13 @@
 <template>
   <div>
-    <el-steps
-      :active="1"
-      finish-status="success"
-      simple
-      style="margin-top: 20px"
-    >
-      <el-step title="Create Order"></el-step>
-      <el-step title="Paid Money"></el-step>
-      <el-step title="Delivery Item"></el-step>
-      <el-step title="Confirm Order"></el-step>
-      <el-step title="Evaluation"></el-step>
-    </el-steps>
     <!-- pay -->
     <el-container>
-        <h2>
-            
-        </h2>
+
     </el-container>
-    <el-container >
+    <el-container style="margin-top: 20px">
         <el-descriptions title="Order Details" direction="vertical" :column="4" border style="width: 70%" class="align-center">
+        <el-descriptions-item label="Order ID" :span="3">xxxxxxxxxxxxxxxxxxx</el-descriptions-item>
+        <el-descriptions-item label="Create Time" :span="1">2021-10-07 21:23:27</el-descriptions-item>
         <el-descriptions-item label="Name">kooriookami</el-descriptions-item>
         <el-descriptions-item label="Phone No.">18100000000</el-descriptions-item>
         <el-descriptions-item label="Delivery Address" :span="2">苏州市</el-descriptions-item>
