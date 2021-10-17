@@ -23,6 +23,7 @@
         <el-header style="padding: 0px;">
           <el-menu
             :default-active="activeIndex2"
+            :router="true"
             class="el-menu-demo action"
             mode="horizontal"
             @select="handleSelect"
@@ -30,18 +31,51 @@
             text-color="#fff"
             active-text-color="#ffd04b"
           >
-            <el-menu-item index="1">Main</el-menu-item>
-            <el-submenu index="2">
-              <template slot="title">My Center</template>
-              <el-menu-item index="2-1">选项1</el-menu-item>
-              <el-menu-item index="2-2">选项2</el-menu-item>
-              <el-menu-item index="2-3">选项3</el-menu-item>
-              <el-submenu index="2-4">
-                <template slot="title">选项4</template>
-                <el-menu-item index="2-4-1">选项1</el-menu-item>
-                <el-menu-item index="2-4-2">选项2</el-menu-item>
-                <el-menu-item index="2-4-3">选项3</el-menu-item>
-              </el-submenu>
+            <el-menu-item 
+              index="1"
+              route="/">
+              Home Page
+            </el-menu-item>
+            <el-menu-item 
+              index="2"
+              route="/My">
+              My Center
+            </el-menu-item>
+            <el-submenu index="3">
+              <template slot="title">Seller Center</template>
+              <el-menu-item 
+                index="3-1"
+                route="/ItemList"
+                >
+                Selling List
+              </el-menu-item>
+              <el-menu-item
+                index="3-2"
+                route="/OrderList"
+                >
+                Order List
+              </el-menu-item>
+              <el-menu-item
+                index="3-3"
+                route="/SellNewProduct"
+                >
+                Post New Product
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">Buyer Center</template>
+              <el-menu-item 
+                index="4-1"
+                route="/OrderList"
+                >
+                Order List
+              </el-menu-item>
+              <el-menu-item
+                index="4-2"
+                route="/SellNewProduct"
+                >
+                Management Delivery Address
+              </el-menu-item>
             </el-submenu>
           </el-menu>
         </el-header>
