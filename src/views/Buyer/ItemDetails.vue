@@ -42,7 +42,7 @@
                 <el-tooltip class="item" effect="dark" content="Chat with Seller" placement="bottom">
                   <el-button type="primary" icon="el-icon-chat-line-round" circle></el-button>
                 </el-tooltip>
-                <el-button type="success" round>Buy</el-button>
+                <el-button type="success" round @click="buyClick">Buy</el-button>
             </el-col>
             </el-row>
         </div>
@@ -121,11 +121,23 @@
         ],
         title: "",
         price: "",
-        seller: ""
+        seller: "",
+        itemId: 0
+      }
+    },
+    methods:{
+      buyClick(){
+              this.$router.push({
+        path: "/Order/Create",
+        query: {
+          id: this.itemId,
+        },
+      });
       }
     },
      created(){
       var that = this
+      this.itemId = this.$route.query.id
       const loading = this.$loading({
           lock: true,
           text: 'Loading',
