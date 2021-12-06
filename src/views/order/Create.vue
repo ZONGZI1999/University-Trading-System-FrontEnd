@@ -576,6 +576,62 @@ export default {
       if (this.step == 2) {
         this.setDeliveryInfoIsShow = true;
       }
+      if (this.step == 3) {
+        console.log("confirm")
+        var sendData = {}
+        const that = this
+        sendData['orderId'] = this.orderInfo.orderDetails.orderNo
+        this.axios.post("http://localhost:8081/order/onConfirm", sendData)
+                  .then(resp => {
+                    console.log(resp)
+                    if(resp.data.code === 0) {
+                      that.step++
+                      this.$message.success("Success to confirm this order!")
+                    } else {
+                      this.$message.error(resp.data.message + ": "+ resp.data.description)
+                    }
+                  })
+                  .catch(err => {
+                    this.$message.error("UNKNOWN ERROR!")
+                  })
+      }
+      if (this.step == 4) {
+        const that = this
+        this.$prompt('Give evaluation', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+        }).then(({ value }) => {
+          var sendData = {}
+          sendData['orderId'] = that.orderInfo.orderDetails.orderNo
+          sendData['sellerEvaluation'] = value
+          that.axios.post("http://localhost:8081/order/giveEvaluation", sendData)
+                    .then(resp => {
+                      console.log(resp)
+                      if(resp.data.code == 0) {
+                        that.step++
+                        if(resp.data.data.sellerEvaluation != null) {
+                          that.orderDetails.evaluation.seller = resp.data.data.sellerEvaluation
+                        }
+
+                        if(resp.data.data.buyerEvaluation != null) {
+                          that.orderDetails.evaluation.buyer = resp.data.data.buyerEvaluation
+                        }
+
+                        this.$message({
+                          type: 'success',
+                          message: 'success to set evaluation!'
+                        });
+                      }else {
+                        this.$message.error(resp.data.message + " : " + resp.data.description )
+                      }
+
+                    })
+
+        }).catch((err) => {
+          console.log(err)
+          this.$message.warning("You cancel to give evaluation!")
+        });
+      }
     },
     button2Click() {
       console.log("Button 2 Click");
@@ -739,6 +795,43 @@ export default {
                 that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
                 that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
                 break;
+              case "ON_RECEIVED":
+                that.step = 4;
+                order.orderStatus = respData.orderStatus;
+                order.orderDetails.orderNo = respData.orderId;
+                order.orderDetails.buyer = respData.buyerId;
+                order.orderDetails.seller = respData.sellerId;
+                order.payment.paymentNo = respData.payNo;
+                order.payment.paymentMethod = "Balance";
+                that.remark = respData.remark;
+                that.itemDetails.itemId = respData.itemId;
+                order.delivery.address = respData.deliveryInfo
+                that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                  if(respData.sellerEvaluation != null) {
+                    that.orderInfo.evaluation.seller = respData.sellerEvaluation
+                  } else if (respData.buyerEvaluation != null){
+                    that.orderInfo.evaluation.buyer = respData.buyerEvaluation
+                  }
+                break;
+                  case "FINISH":
+                    that.step = 5;
+                    order.orderStatus = respData.orderStatus;
+                    order.orderDetails.orderNo = respData.orderId;
+                    order.orderDetails.buyer = respData.buyerId;
+                    order.orderDetails.seller = respData.sellerId;
+                    order.payment.paymentNo = respData.payNo;
+                    order.payment.paymentMethod = "Balance";
+                    that.remark = respData.remark;
+                    that.itemDetails.itemId = respData.itemId;
+                    order.delivery.address = respData.deliveryInfo
+                    that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                    that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                    that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                      that.orderInfo.evaluation.seller = respData.sellerEvaluation
+                      that.orderInfo.evaluation.buyer = respData.buyerEvaluation
+                    break;
             }
           } else {
             that.showAll = false;
