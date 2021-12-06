@@ -51,7 +51,7 @@
               </el-menu-item>
               <el-menu-item
                 index="3-2"
-                route="/OrderList"
+                route="/SellerOrderList"
                 >
                 Order List
               </el-menu-item>
@@ -66,7 +66,7 @@
               <template slot="title">Buyer Center</template>
               <el-menu-item 
                 index="4-1"
-                route="/OrderList"
+                route="/BuyerOrderList"
                 >
                 Order List
               </el-menu-item>
