@@ -27,7 +27,7 @@
             >
           </div>
           <h2>
-            Paid: 2 <el-divider direction="vertical"></el-divider> Delivery: 2
+            Paid: {{buyerPaid}} <el-divider direction="vertical"></el-divider> On Delivery: {{buyerDelivery}}
           </h2>
         </el-card>
       </el-col>
@@ -40,31 +40,28 @@
             >
           </div>
           <h2>
-            Unsold: 3<el-divider direction="vertical"></el-divider>Paid:
-            2<el-divider direction="vertical"></el-divider>Delivery: 2
+            Unsold: {{sellerUnsold}}<el-divider direction="vertical"></el-divider>Paid: {{sellerPaid}}
+            <el-divider direction="vertical"></el-divider>Delivery: {{ sellerDelivery }}
           </h2>
         </el-card>
       </el-col>
     </el-row>
-    <el-divider>Evaluation</el-divider>
+    <el-divider>My Recent Evaluation</el-divider>
 
     <el-table :data="evaluationData" style="width: 100%" max-height="250">
-      <el-table-column fixed prop="evalutaionDate" label="Evaluation Date" width="200">
-      </el-table-column>
-      <el-table-column prop="orderId" label="Order ID" width="120"> </el-table-column>
-      <el-table-column prop="as" label="AS" width="120">
+      <el-table-column fixed prop="orderCreateDate" label="Evaluation Date" width="200">
       </el-table-column>
       <el-table-column prop="itemTitle" label="Item Title" width="120"> </el-table-column>
-      <el-table-column prop="evalutaion" label="Evalutaion">
-      </el-table-column>
+      <el-table-column prop="evaluationFromBuyer" label="Evaluation From Buyer"></el-table-column>
+      <el-table-column prop="evaluationFromSeller" label="Evaluation From Seller"></el-table-column>
       <el-table-column fixed="right" label="Operation" width="120">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
+            @click.native.prevent="deleteRow(scope.$index, evaluationData)"
             type="text"
             size="small"
           >
-            移除
+            View
           </el-button>
         </template>
       </el-table-column>
@@ -91,74 +88,81 @@
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          province: "上海",
-          city: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          zip: 200333,
-        },
-      ],
       evaluationData: [
-        {
-          evalutaionDate: '2021-10-13 23:07:05',
-          orderId: '123',
-          as: '123',
-          itemTitle:'123',
-          evalutaion:'aaaaaaaa'
-        }
-      ]
+
+      ],
+      buyerPaid: 0,
+      buyerDelivery: 0,
+      sellerUnsold: 0,
+      sellerPaid: 0,
+      sellerDelivery: 0
     };
   },
+  async created() {
+    let respData
+    await this.axios.get("http://localhost:8081/order/queryOrderList/all", {params:{studentId:"SWE1809388"}})
+        .then(resp => {
+          if(resp.data.code == 0) {
+            respData = resp.data.data
+          }
+        })
+    for (var index = 0; index < respData.length; index++) {
+      if (respData[index].orderStatus != "FINISH") {
+        continue
+      }
+      var itemTitle;
+      await this.axios.get("http://localhost:8081/item/queryOneItem", {params:{itemId: respData[index].itemId}})
+          .then(resp => {
+            itemTitle = resp.data.data.itemTitle
+          })
+      this.evaluationData.push({
+        orderCreateDate: respData[index].createTime,
+        itemTitle: itemTitle,
+        evaluationFromBuyer: respData[index].buyerEvaluation,
+        evaluationFromSeller: respData[index].sellerEvaluation
+      })
+    }
+    await this.axios.get("http://localhost:8081/order/queryOrderList/buyer", {params:{studentId:"SWE1809388"}})
+        .then(resp => {
+          if(resp.data.code == 0) {
+            respData = resp.data.data
+          }
+        })
+    for (var index = 0; index < respData.length; index++) {
+      if (respData[index].orderStatus == 'PAID'){
+        this.buyerPaid++
+      }
+      if (respData[index].orderStatus == 'ON_DELIVERY'){
+        this.buyerDelivery++
+      }
+    }
+    await this.axios.get("http://localhost:8081/order/queryOrderList/seller", {params:{studentId:"SWE1809387"}})
+        .then(resp => {
+          if(resp.data.code == 0) {
+            respData = resp.data.data
+          }
+        })
+    for (var index = 0; index < respData.length; index++) {
+      if (respData[index].orderStatus == 'PAID'){
+        this.sellerPaid++
+      }
+      if (respData[index].orderStatus == 'ON_DELIVERY'){
+        this.sellerDelivery++
+      }
+    }
+    await this.axios.get("http://localhost:8081/item/queryItems")
+        .then(resp => {
+          console.log(resp)
+          if(resp.data.code == 0) {
+            respData = resp.data.data
+          }
+        })
+    for (var index = 0; index < respData.length; index++) {
+      if (respData[index].itemStatus == 'ON_SELL'){
+        this.sellerUnsold++
+      }
+    }
+
+  }
 };
 </script>
