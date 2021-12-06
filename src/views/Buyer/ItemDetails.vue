@@ -16,7 +16,7 @@
             </el-col>
             <el-col :span="18">
                 <h3 style="margin-bottom: 10px; margin-top: 0px">
-                  {{title}}
+                  {{(itemStatus != 'ON_SELL'?"[" + itemStatus+"] " :"")+ title}}
                 </h3>
                 <!-- Seller -->
                 <el-popover
@@ -42,7 +42,7 @@
                 <el-tooltip class="item" effect="dark" content="Chat with Seller" placement="bottom">
                   <el-button type="primary" icon="el-icon-chat-line-round" circle></el-button>
                 </el-tooltip>
-                <el-button type="success" round @click="buyClick">Buy</el-button>
+                <el-button  :disabled="itemStatus == 'SOLD'" type="success"  round @click="buyClick">Buy</el-button>
             </el-col>
             </el-row>
         </div>
@@ -122,7 +122,8 @@
         title: "",
         price: "",
         seller: "",
-        itemId: 0
+        itemId: 0,
+        itemStatus: ""
       }
     },
     methods:{
@@ -154,6 +155,7 @@
                         that.title = respData.itemTitle
                         that.price = (respData.itemPrice) / 100.00
                         that.seller = respData.sellerId
+                        that.itemStatus = respData.itemStatus
                         console.log(that.picList);
                       })
     }

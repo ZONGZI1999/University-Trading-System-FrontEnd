@@ -13,6 +13,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="item" label="Item"> </el-table-column>
+        <el-table-column prop="status" label="Current Status"> </el-table-column>
         <el-table-column prop="price" label="Price" width="200">
         </el-table-column>
         <el-table-column prop="tag" label="Operation" width="200">
@@ -20,8 +21,15 @@
             <el-link
               style="margin: 5px"
               type="primary"
-              @click="viewOrderDetails(scope.row.id)"
-              >View</el-link
+              v-if="scope.row.orderId != null"
+              @click="viewOrderDetails(scope.row.id, scope.row.orderId)"
+              >View Order</el-link
+            >
+            <el-link
+                style="margin: 5px"
+                type="primary"
+                @click="viewOrderDetails(scope.row.id, null)"
+            >View Item</el-link
             >
           </template>
         </el-table-column>
@@ -69,31 +77,54 @@ export default {
         this.showList.push(this.orderList[i]);
       }
     },
-    viewOrderDetails(id) {
+    viewOrderDetails(id, orderId) {
       console.log(id);
-      this.$router.push({
-        path: "/ItemDetail",
-        query: {
-          id: id,
-        },
-      });
+      if(orderId != null) {
+        this.$router.push({
+          path: "/Order/Details",
+          query: {
+            orderId: orderId,
+          },
+        });
+      } else {
+        this.$router.push({
+          path: "/ItemDetail",
+          query: {
+            id: id,
+          },
+        });
+      }
+
     },
   },
   async created() {
     var that = this;
     await this.axios
       .get("http://localhost:8081/item/queryItems")
-      .then((resp) => {
+      .then(async (resp) => {
         var respData = resp.data.data;
         console.log(respData);
         for (var i = 0; i < respData.length; i++) {
+          var status = respData[i].itemStatus
+          var orderId = null;
+          if (status == 'SOLD') {
+            await this.axios.get("http://localhost:8081/order/queryOrderByItemId", {params: {itemId: respData[i].itemId}})
+                            .then(resp => {
+                              if(resp.data.code == 0) {
+                                status = resp.data.data.orderStatus
+                                orderId = resp.data.data.orderId
+                              }
+                            })
+          }
           var needToPush = {
             pic: {
               main: respData[i].itemImage[0],
               picList: respData[i].itemImage,
             },
+            status: status,
             id: respData[i].itemId,
             item: respData[i].itemTitle,
+            orderId: orderId,
             price: respData[i].itemPrice / 100.0,
           };
           console.log(needToPush);
