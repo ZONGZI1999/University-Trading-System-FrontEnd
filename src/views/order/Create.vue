@@ -323,7 +323,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="setDeliveryInfoIsShow = false">Cancel</el-button>
-          <el-button type="primary" @click="setDeliveryInfoIsShow = false"
+          <el-button type="primary" @click="onClickDelivery"
             >Confirm</el-button
           >
         </div>
@@ -580,6 +580,41 @@ export default {
     button2Click() {
       console.log("Button 2 Click");
     },
+    onClickDelivery() {
+      var sendData = {};
+      sendData['orderId'] = this.$route.query.orderId
+      sendData['deliveryCompany'] = this.orderInfo.delivery.trackingInfo.deliveryCompany
+      sendData['trackingNo'] = this.orderInfo.delivery.trackingInfo.trackingNo
+      console.log(sendData)
+      var that = this
+      this.axios.post("http://localhost:8081/order/setDelivery", sendData)
+                .then(resp => {
+                  console.log(resp)
+                  if(resp.data.code === 0) {
+                    const respData = resp.data.data;
+                    that.step = 3
+                    that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                    that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                    that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                    this.$message({
+                      message: "Set delivery successfully!",
+                      type: "success",
+                    });
+                  } else {
+                    this.$message({
+                      message: "Set delivery failed!\nReason: " + resp.data.description,
+                      type: "warning",
+                    });
+                  }
+                })
+                .catch(err => {
+                  this.$message({
+                    message: "Set delivery failed!\nReason: UNKNOWN ERROR",
+                    type: "warning",
+                  });
+                })
+      this.setDeliveryInfoIsShow = false
+    }
   },
   watch: {
     step() {
@@ -650,7 +685,7 @@ export default {
         this.$route.query.orderId == null
       ) {
         this.showAll = false;
-        this.$alert("Order not exist!", "Error", {
+        await this.$alert("Order not exist!", "Error", {
           confirmButtonText: "OK",
           callback: (action) => {
             that.$router.push({
@@ -688,6 +723,21 @@ export default {
                 that.remark = respData.remark;
                 that.itemDetails.itemId = respData.itemId;
                 order.delivery.address = respData.deliveryInfo
+                break;
+              case "ON_DELIVERY":
+                that.step = 3;
+                order.orderStatus = respData.orderStatus;
+                order.orderDetails.orderNo = respData.orderId;
+                order.orderDetails.buyer = respData.buyerId;
+                order.orderDetails.seller = respData.sellerId;
+                order.payment.paymentNo = respData.payNo;
+                order.payment.paymentMethod = "Balance";
+                that.remark = respData.remark;
+                that.itemDetails.itemId = respData.itemId;
+                order.delivery.address = respData.deliveryInfo
+                that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
                 break;
             }
           } else {
