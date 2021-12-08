@@ -9,7 +9,7 @@
         <el-input type="password" placeholder="Please Enter Your Password" v-model="form.password"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" plain>Login</el-button>
+        <el-button type="primary" plain @click="onLogin">Login</el-button>
         <el-button type="info" plain >?</el-button>
       </el-form-item>
     </el-form>
@@ -40,7 +40,20 @@
       }
     },
     methods: {
-
+      onLogin(){
+        var sendData = {}
+        sendData['studentId'] = this.form.username
+        this.axios.post("http://localhost:8081/account/login", sendData)
+                  .then(resp => {
+                    if (resp.data.code == 0) {
+                      var key = resp.data.data.tokenName
+                      var token = resp.data.data.tokenValue
+                      localStorage.setItem(key, token)
+                      console.log(resp)
+                      console.log(localStorage.getItem(key))
+                    }
+                  })
+      }
     }
   }
 </script>

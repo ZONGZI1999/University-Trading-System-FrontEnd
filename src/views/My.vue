@@ -14,7 +14,7 @@
               >Top Up</el-button
             >
           </div>
-          <h2>$ 100.00</h2>
+          <h2>$ {{balance/100.00}}</h2>
         </el-card>
       </el-col>
       <!-- Buyer -->
@@ -22,12 +22,12 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Buyer Order</span>
-            <el-button style="float: right; padding: 3px 0" type="text"
+            <el-button style="float: right; padding: 3px 0" type="text" @click="viewBuyerOrder"
               >View</el-button
             >
           </div>
           <h2>
-            Paid: {{buyerPaid}} <el-divider direction="vertical"></el-divider> On Delivery: {{buyerDelivery}}
+            Paid: {{buyerPaid}} <el-divider direction="vertical" /> On Delivery: {{buyerDelivery}}
           </h2>
         </el-card>
       </el-col>
@@ -35,7 +35,7 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>Seller Order</span>
-            <el-button style="float: right; padding: 3px 0" type="text"
+            <el-button style="float: right; padding: 3px 0" type="text" @click="viewSellerOrder"
               >View</el-button
             >
           </div>
@@ -95,8 +95,17 @@ export default {
       buyerDelivery: 0,
       sellerUnsold: 0,
       sellerPaid: 0,
-      sellerDelivery: 0
+      sellerDelivery: 0,
+      balance: 0
     };
+  },
+  methods:{
+    viewBuyerOrder() {
+      this.$router.push("/buyerOrderList")
+    },
+    viewSellerOrder() {
+      this.$router.push("/SellerOrderList")
+    }
   },
   async created() {
     let respData
@@ -162,6 +171,13 @@ export default {
         this.sellerUnsold++
       }
     }
+    await this.axios.get("http://localhost:8081/balance/queryBalance")
+                    .then(resp => {
+                      console.log(resp)
+                      if(resp.data.code == 0) {
+                        this.balance = resp.data.data.balance
+                      }
+                    })
 
   }
 };

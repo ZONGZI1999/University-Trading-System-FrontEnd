@@ -270,11 +270,12 @@
           </el-table-column>
           <el-table-column align="center" min-width="100">
             <template slot="header">
-              <el-input
-                v-model="search"
-                size="mini"
-                placeholder="输入关键字搜索"
-              />
+<!--              <el-input-->
+<!--                v-model="search"-->
+<!--                size="mini"-->
+<!--                placeholder="输入关键字搜索"-->
+<!--              />-->
+              <el-button size="mini" type="primary" @click="initEditAddress(true)">Add New Address</el-button>
             </template>
             <template slot-scope="scope">
               <div>
@@ -300,11 +301,28 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-form v-if="showEditAddress" :inline="true" :model="editAddressData" size="mini" style="width: auto; margin-top: 20px">
+          <el-form-item label="Name">
+            <el-input v-model="editAddressData.name" placeholder="Name"></el-input>
+          </el-form-item>
+          <el-form-item label="Phone No">
+            <el-input v-model="editAddressData.phoneNo" placeholder="Phone No."></el-input>
+          </el-form-item>
+          <el-form-item label="Address">
+            <el-input v-model="editAddressData.address" placeholder="Address"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitEditAddress">Submit</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="danger" @click="initEditAddress(false)">Cancel</el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
 
       <!-- Set Delivery Info -->
       <el-dialog
-        title="Set Delivery Info"
+        title="Set Delivery Address"
         :visible.sync="setDeliveryInfoIsShow"
       >
         <el-form :model="orderInfo.delivery.trackingInfo">
@@ -387,6 +405,13 @@ export default {
   data() {
     return {
       showAll: true,
+      showEditAddress: false,
+      editAddressData: {
+        deliveryInfoId: 0,
+        name: "",
+        phoneNo: "",
+        address: ""
+      },
       orderInfo: {
         orderStatus: "",
         orderDetails: {
@@ -421,18 +446,6 @@ export default {
         pic: [],
       },
       addressData: [
-        {
-          name: "Zekizheng",
-          phoneNo: "1806000000",
-          address:
-            "Jalan Sunsuria, Bandar Sunsuria, 43900 Sepang, Selangor Darul Ehsan, Malaysia",
-        },
-        {
-          name: "Test",
-          phoneNo: "11111",
-          address:
-            "Jalan Sunsuria, TEST AREA Bandar Sunsuria, 43900 Sepang, Selangor Darul Ehsan, Malaysia",
-        },
       ],
       showModule: {
         addressSelectButton: true,
@@ -490,12 +503,59 @@ export default {
       });
     },
     editAddress(index, row) {
-      console.log("edit address");
       console.log(index, row);
+      this.showEditAddress = true
+      this.editAddressData.address = row.address
+      this.editAddressData.deliveryInfoId = row.deliveryInfoId
+      this.editAddressData.name = row.name
+      this.editAddressData.phoneNo = row.phoneNo
     },
     deleteAddress(index, row) {
       console.log("delete address");
       console.log(index, row);
+    },
+    submitEditAddress() {
+      var URL = ""
+      var mode = ""
+      if(this.editAddressData.deliveryInfoId == 0) {
+        mode = "insert"
+         URL = "http://localhost:8081/delivery/insertDeliveryInfo"
+      } else {
+        mode = "update"
+         URL = "http://localhost:8081/delivery/updateDeliveryInfo"
+      }
+      this.axios.post(URL, this.editAddressData)
+                .then(resp => {
+                  if(resp.data.code === 0) {
+                    if (mode == "update") {
+                      this.axios.get("http://localhost:8081/delivery/getDeliveryInfoList", {params: {studentId: "SWE1809388"}})
+                          .then(resp => {
+                            if(resp.data.code == 0) {
+                              this.addressData = resp.data.data
+                            }
+                          })
+                    } else {
+                      this.addressData.push(resp.data.data)
+                    }
+                    this.initEditAddress(false)
+                  } else {
+                    console.log("error")
+                  }
+                })
+                .catch(err=> {
+                  console.log(err)
+                })
+
+
+    },
+    initEditAddress(status) {
+      this.showEditAddress = status
+      this.editAddressData = {
+        deliveryInfoId: 0,
+        name: "",
+        phoneNo: "",
+        address: ""
+      }
     },
     stepInc() {
       if (this.step < 5) {
@@ -730,6 +790,17 @@ export default {
       }
       console.log(this.step);
     },
+    setDeliveryAddressIsShow() {
+      if (this.setDeliveryAddressIsShow) {
+        this.axios.get("http://localhost:8081/delivery/getDeliveryInfoList", {params: {studentId: "SWE1809388"}})
+                  .then(resp => {
+                    if(resp.data.code == 0) {
+                      this.addressData = resp.data.data
+                    }
+                  })
+
+      }
+    }
   },
   async created() {
     var that = this;
