@@ -80,7 +80,7 @@
                         <el-menu-item 
               index="5"
               route="/Login">
-              Login
+                          {{ navText }}
             </el-menu-item>
           </el-menu>
         </el-header>
@@ -102,17 +102,75 @@
 export default {
   data() {
     return {
-      activeIndex: "1",
       activeIndex2: "1",
       searchKeyword: '',
-      imgUrl: require("./assets/logo.png")
+      imgUrl: require("./assets/logo.png"),
+      navText: "Logout"
     };
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+
     },
   },
+  watch: {
+    async $route(current, from){
+      var currentPath = this.$route.path
+      if(!localStorage.getItem("trading-token")) {
+        this.navText = "Login"
+      }
+      if(currentPath != "/" && currentPath != "/Login") {
+        var token = localStorage.getItem("trading-token")
+        if(token == null) {
+          console.log("token is null")
+          this.navText = "Login"
+          this.$router.push({path: "/Login", query: {ref: current.path}})
+          this.$message.error("You haven't login yet! Please Login!")
+          return false;
+        } else {
+          console.log("token is not null")
+          await this.axios.get("http://localhost:8081/account/valid", {params: {token: token}})
+              .then(resp => {
+                console.log(resp)
+                if (resp.data.code !== 0) {
+                  localStorage.removeItem("trading-token")
+                  this.navText = "Login"
+                  this.$router.push({path: "/Login", query: {ref: current.fullPath}})
+                  this.$message.error(resp.data.description)
+                  return false;
+                }
+              })
+        }
+      }
+    }
+  },
+  async created() {
+    var currentPath = this.$route.path
+    if(!localStorage.getItem("trading-token")) {
+      this.navText = "Login"
+    }
+    if(currentPath != "/" && currentPath != "/Login") {
+      var token = localStorage.getItem("trading-token")
+      if(token == null) {
+        console.log("token is null")
+        this.$router.push("/Login")
+        this.$message.error("You haven't login yet! Please Login!")
+        return false;
+      } else {
+        console.log("token is not null")
+        await this.axios.get("http://localhost:8081/account/valid", {params: {token: token}})
+                  .then(resp => {
+                    console.log(resp)
+                    if (resp.data.code !== 0) {
+                      localStorage.removeItem("trading-token")
+                      this.$router.push("/Login")
+                      this.$message.error(resp.data.description)
+                      return false;
+                    }
+                  })
+      }
+    }
+  }
 };
 </script>
 

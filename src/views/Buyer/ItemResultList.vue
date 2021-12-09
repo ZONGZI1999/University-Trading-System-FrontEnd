@@ -102,35 +102,45 @@ export default {
     await this.axios
       .get("http://localhost:8081/item/queryItems")
       .then(async (resp) => {
-        var respData = resp.data.data;
-        console.log(respData);
-        for (var i = 0; i < respData.length; i++) {
-          var status = respData[i].itemStatus
-          var orderId = null;
-          if (status == 'SOLD') {
-            await this.axios.get("http://localhost:8081/order/queryOrderByItemId", {params: {itemId: respData[i].itemId}})
-                            .then(resp => {
-                              if(resp.data.code == 0) {
-                                status = resp.data.data.orderStatus
-                                orderId = resp.data.data.orderId
-                              }
-                            })
+        if (resp.data.code === 0) {
+          var respData = resp.data.data;
+          console.log(respData);
+          for (var i = 0; i < respData.length; i++) {
+            var status = respData[i].itemStatus
+            var orderId = null;
+            if (status == 'SOLD') {
+              await this.axios.get("http://localhost:8081/order/queryOrderByItemId", {params: {itemId: respData[i].itemId}})
+                  .then(resp => {
+                    if(resp.data.code == 0) {
+                      status = resp.data.data.orderStatus
+                      orderId = resp.data.data.orderId
+                    } else {
+                      this.$message.error(resp.data.message + ": " + resp.data.description)
+                    }
+                  })
+                  .catch(err => {
+                    this.$message.error(err.toString())
+                  })
+            }
+            var needToPush = {
+              pic: {
+                main: respData[i].itemImage[0],
+                picList: respData[i].itemImage,
+              },
+              status: status,
+              id: respData[i].itemId,
+              item: respData[i].itemTitle,
+              orderId: orderId,
+              price: respData[i].itemPrice / 100.0,
+            };
+            console.log(needToPush);
+            that.orderList.push(needToPush);
+            console.log(that.orderList);
           }
-          var needToPush = {
-            pic: {
-              main: respData[i].itemImage[0],
-              picList: respData[i].itemImage,
-            },
-            status: status,
-            id: respData[i].itemId,
-            item: respData[i].itemTitle,
-            orderId: orderId,
-            price: respData[i].itemPrice / 100.0,
-          };
-          console.log(needToPush);
-          that.orderList.push(needToPush);
-          console.log(that.orderList);
+        } else {
+          this.$message.error(resp.data.message + ": " + resp.data.description)
         }
+
       });
     for (var i = 0; i < this.orderList.length && i < 10; i++) {
       this.showList.push(this.orderList[i]);

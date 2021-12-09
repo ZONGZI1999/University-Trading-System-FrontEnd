@@ -1,28 +1,28 @@
 <template>
     <div>
-        <!-- Item Details -->
+      <div v-if="err_msg === ''">
         <el-container>
-        <div>
+          <div>
             <el-row>
-            <el-col :span="4">
+              <el-col :span="4">
                 <div class="block">
-                <span class="demonstration"></span>
-                <el-image
-                    :src="picList[0]"
-                    fit="cover"
-                    :preview-src-list="picList"
-                ></el-image>
+                  <span class="demonstration"></span>
+                  <el-image
+                      :src="picList[0]"
+                      fit="cover"
+                      :preview-src-list="picList"
+                  ></el-image>
                 </div>
-            </el-col>
-            <el-col :span="18">
+              </el-col>
+              <el-col :span="18">
                 <h3 style="margin-bottom: 10px; margin-top: 0px">
                   {{(itemStatus != 'ON_SELL'?"[" + itemStatus+"] " :"")+ title}}
                 </h3>
                 <!-- Seller -->
                 <el-popover
-                  placement="right"
-                  width="400"
-                  trigger="hover">
+                    placement="right"
+                    width="400"
+                    trigger="hover">
                   数据
                   <div style="display: table;" slot="reference">
                     <el-avatar size="small" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
@@ -31,7 +31,7 @@
                 </el-popover>
 
                 <div class="price-title">
-                $ {{price}}
+                  $ {{price}}
                 </div>
                 <el-tooltip class="item" effect="dark" content="Star" placement="bottom">
                   <el-button type="warning" icon="el-icon-star-off" circle></el-button>
@@ -43,9 +43,9 @@
                   <el-button type="primary" icon="el-icon-chat-line-round" circle></el-button>
                 </el-tooltip>
                 <el-button  :disabled="itemStatus == 'SOLD'" type="success"  round @click="buyClick">Buy</el-button>
-            </el-col>
+              </el-col>
             </el-row>
-        </div>
+          </div>
         </el-container>
 
         <el-container>
@@ -59,6 +59,8 @@
             <li v-for="(des, index) in desc" :key="index">{{des}}</li>
           </ul>
         </el-container>
+      </div>
+      <el-empty v-if="err_msg !== ''" :description="err_msg"></el-empty>
     </div>
 </template>
 
@@ -119,6 +121,7 @@
         desc: [
           
         ],
+        err_msg: "",
         title: "",
         price: "",
         seller: "",
@@ -149,14 +152,24 @@
       this.axios.get("http://localhost:8081/item/queryOneItem", {params:{itemId: this.$route.query.id}})
                       .then(resp => {
                         loading.close()
-                        var respData = resp.data.data
-                        that.desc = respData.itemDescription
-                        that.picList = respData.itemImage
-                        that.title = respData.itemTitle
-                        that.price = (respData.itemPrice) / 100.00
-                        that.seller = respData.sellerId
-                        that.itemStatus = respData.itemStatus
-                        console.log(that.picList);
+                        if (resp.data.code === 0) {
+                          var respData = resp.data.data
+                          that.desc = respData.itemDescription
+                          that.picList = respData.itemImage
+                          that.title = respData.itemTitle
+                          that.price = (respData.itemPrice) / 100.00
+                          that.seller = respData.sellerId
+                          that.itemStatus = respData.itemStatus
+                          console.log(that.picList);
+                        }else {
+                          this.$message.error(resp.data.message + ": " + resp.data.description)
+                          this.err_msg = resp.data.message + ": " + resp.data.description
+                        }
+
+                      })
+                      .catch(err=> {
+                        this.err_msg = "Internal Error!"
+                        console.log(err)
                       })
     }
   }

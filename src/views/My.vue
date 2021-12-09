@@ -111,9 +111,17 @@ export default {
     let respData
     await this.axios.get("http://localhost:8081/order/queryOrderList/all", {params:{studentId:"SWE1809388"}})
         .then(resp => {
+          console.log(resp)
           if(resp.data.code == 0) {
             respData = resp.data.data
+          } else {
+            this.$message.error(resp.data.description)
+            return false;
           }
+        })
+        .catch(err => {
+          this.$message.error("Internal error!")
+          return false;
         })
     for (var index = 0; index < respData.length; index++) {
       if (respData[index].orderStatus != "FINISH") {
@@ -122,8 +130,17 @@ export default {
       var itemTitle;
       await this.axios.get("http://localhost:8081/item/queryOneItem", {params:{itemId: respData[index].itemId}})
           .then(resp => {
-            itemTitle = resp.data.data.itemTitle
+            if(resp.data.code == 0 ) {
+              itemTitle = resp.data.data.itemTitle
+            } else {
+              this.$message.error(resp.data.description)
+              return false;
+            }
           })
+      .catch(err=>{
+        this.$message.error("Internal error")
+        return false;
+      })
       this.evaluationData.push({
         orderCreateDate: respData[index].createTime,
         itemTitle: itemTitle,
