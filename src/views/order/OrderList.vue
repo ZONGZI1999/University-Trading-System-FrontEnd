@@ -26,6 +26,11 @@
                     style="width: 200px;"
                     :src="scope.row.pic.main" 
                     :preview-src-list="scope.row.pic.picList">
+                <template slot="error">
+                  <div style="text-align: center;">
+                    NO IMAGE GIVEN
+                  </div>
+                </template>
                 </el-image>
             </template>
             </el-table-column>

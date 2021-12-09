@@ -7,10 +7,17 @@
           <el-row>
             <el-col :span="4">
               <el-image
-                  src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+                  :src="imageURL[0]"
                   fit="cover"
-                  :preview-src-list="picList"
-              ></el-image>
+                  :preview-src-list="imageURL"
+              >
+                <template slot="error">
+                  <div style="text-align: center;">
+                    NO IMAGE GIVEN <br/>
+                    Please Upload Image
+                  </div>
+                </template>
+              </el-image>
             </el-col>
             <el-col :span="18">
               <el-container>
@@ -33,9 +40,13 @@
               <el-container>
                 <el-upload
                     class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="http://localhost:8081/upload"
+                    :headers="headersToUpload"
                     :on-change="handleChange"
+                    name="multipartFile"
                     :file-list="fileList"
+                    :on-success="successUpload"
+                    :on-remove="onRemove"
                 >
                   <el-button size="small" type="primary">Upload Photo</el-button>
                   <div slot="tip" class="el-upload__tip">
@@ -169,24 +180,15 @@ export default {
   data() {
     return {
       mode: "NEW",
-      picList: [
-        "http://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
-        "http://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg",
-      ],
+      headersToUpload: {},
       errDesc: "",
       desc: "",
       title: "",
       price: "",
       fileList: [
-        {
-          name: "food.jpeg",
-          url: "http://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-        {
-          name: "food2.jpeg",
-          url: "http://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
+
       ],
+      imageURL: [],
       descriptions: [
         "【brushed Microfiber Made】 4-piece Size Twin Bed Sheet Set: 2 Pillow Cases and a Top Sheet and Fitted Sheet. Top Sheet Fitted Sheet 2 Pillow Cases (20” X 30”). Spaceship Rockets Print Kids Bedding",
         "【KFZ COSMIC PLANET PRINTED BEDDING】 The Bed Sheet Sets include 1 Flat Sheet, 1 Fitted Sheet, and 2 Pillow Cases Twin Sheets Set Blue Color for Girls Kids Adults",
@@ -197,9 +199,23 @@ export default {
     };
   },
   methods: {
+    successUpload(response, file, fileList){
+      console.log("SUCCESS", response, file, fileList)
+      this.imageURL.push("http://localhost:8081/download?fileName=" + response.filePath)
+    },
+    onRemove(file, fileList){
+      console.log("REMOVE", file, fileList)
+      for (var index = 0; index < this.imageURL.length; index++) {
+        if (this.imageURL[index] == 'http://localhost:8081/download?fileName='+file.response.filePath) {
+          this.imageURL.splice(index, 1)
+          break;
+        }
+      }
+    },
     handleChange(file, fileList) {
-      console.log(fileList);
-      this.fileList = fileList.slice(-3);
+      console.log("file", file)
+      console.log("file list", fileList)
+      // this.imageURL.push("http://localhost:8081/download?fileName=" + this.file.name)
     },
     addDesc() {
       this.descriptions.push(this.desc);
@@ -219,17 +235,14 @@ export default {
       var that = this;
       console.log("post new one");
       console.log();
-      var image = [];
-      for (var i = 0; i < this.fileList.length; i++) {
-        image.push(this.fileList[i].url);
-      }
+      var image = this.imageURL;
       var sendData = {
         itemTitle: this.title,
         itemPrice: Number(this.price) * 100 + "",
         itemDescription: this.descriptions,
         itemImage: image,
       };
-      console.log(sendData);
+      console.log("POST", sendData);
       var URL = "http://localhost:8081/item/postNewItem"
       if (this.mode == "UPDATE") {
         URL = "http://localhost:8081/item/updateItem"
@@ -265,6 +278,7 @@ export default {
     },
   },
   created() {
+    this.headersToUpload = {"trading-token": localStorage.getItem("trading-token")}
     if (this.$route.path == '/EditProductInfo') {
       var that = this
       this.mode = "UPDATE"

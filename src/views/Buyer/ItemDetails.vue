@@ -3,18 +3,22 @@
       <div v-if="err_msg === ''">
         <el-container>
           <div>
-            <el-row>
-              <el-col :span="4">
+            <el-row type="flex">
+              <el-col :span="12">
                 <div class="block">
                   <span class="demonstration"></span>
                   <el-image
                       :src="picList[0]"
                       fit="cover"
                       :preview-src-list="picList"
-                  ></el-image>
+                  >
+                    <template slot="error">
+                      ERROR
+                    </template>
+                  </el-image>
                 </div>
               </el-col>
-              <el-col :span="18">
+              <el-col :span="12">
                 <h3 style="margin-bottom: 10px; margin-top: 0px">
                   {{(itemStatus != 'ON_SELL'?"[" + itemStatus+"] " :"")+ title}}
                 </h3>
