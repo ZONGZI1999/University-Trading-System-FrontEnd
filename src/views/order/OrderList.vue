@@ -42,6 +42,7 @@
             <el-table-column
             prop="price"
             label="Price"
+            sortable
             width="200">
             </el-table-column>
             <el-table-column
@@ -52,7 +53,8 @@
             :filter-method="filterTag"
             filter-placement="bottom-end">
             <template slot-scope="scope">
-                {{getStepName(scope.row.step)}}
+              <el-tag :type="tagType(getStepName(scope.row.step))">{{getStepName(scope.row.step)}}</el-tag>
+
             </template>
             </el-table-column>
             <el-table-column
@@ -83,6 +85,8 @@
             { text: 'ON_DELIVERY', value: '2'},
             { text: 'ON_RECEIVED', value: '3'},
             { text: 'FINISH', value: '4'},
+            { text: 'HAS_REFUND', value: '6'},
+            { text: 'CLOSED', value: '7'},
         ],
         orderList: [
 
@@ -102,6 +106,7 @@
           },
         });
       },
+
       
       getStepName(step){
           for(var index in this.stepToText){
@@ -116,8 +121,22 @@
              return this.stepToText[index].value
            }
          }
+       },
+       tagType(status){
+         if (status === "FINISH"){
+           return 'success'
+         }
+         if (status === 'HAS_REFUND'){
+           return "danger"
+         }
+         if (status === "CLOSED") {
+           return "warning"
+         }
+         if (status === "CREATED") {
+           return "info"
+         }
+         return ""
        }
-
     },
     watch:{
       async $route(to,from){

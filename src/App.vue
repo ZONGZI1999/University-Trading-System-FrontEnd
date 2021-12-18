@@ -15,7 +15,7 @@
           <el-col :span="9" >
             <el-container>
                 <el-input placeholder="Please Enter Keywords" v-model="searchKeyword" class="input-with-select">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
               </el-input>
             </el-container>
           </el-col>
@@ -70,12 +70,6 @@
                 >
                 Order List
               </el-menu-item>
-              <el-menu-item
-                index="4-2"
-                route="/SellNewProduct"
-                >
-                Management Delivery Address
-              </el-menu-item>
             </el-submenu>
                         <el-menu-item 
               index="5"
@@ -102,7 +96,7 @@
 export default {
   data() {
     return {
-      activeIndex2: "1",
+      activeIndex2: "",
       searchKeyword: '',
       imgUrl: require("./assets/logo.png"),
       navText: "Logout"
@@ -112,10 +106,45 @@ export default {
     handleSelect(key, keyPath) {
 
     },
+    search() {
+      this.$router.push({
+        path:'/Search',
+        query: {
+          keywords: this.searchKeyword
+        }
+      })
+    }
   },
   watch: {
     async $route(current, from){
       var currentPath = this.$route.path
+      if (currentPath === '/Search') {
+        this.activeIndex2 = "0"
+      }
+      if(currentPath === '/Login') {
+        this.activeIndex2 = '5'
+      }
+      if (currentPath === '/BuyerOrderList') {
+        this.activeIndex2 = '4-1'
+      }
+      if (currentPath === "/ItemList") {
+        this.activeIndex2 = "3-1"
+      }
+      if(currentPath === "/SellerOrderList") {
+        this.activeIndex2 = "3-2"
+      }
+      if (currentPath === '/SellNewProduct') {
+        this.activeIndex2 = "3-3"
+      }
+      if(currentPath === '/') {
+        this.activeIndex2 = "1"
+      }
+      if (currentPath === '/My'){
+        this.activeIndex2 = '2'
+      }
+      if (currentPath === '/Order/Details' ||currentPath === '/Order/Create' ) {
+        this.activeIndex2 = '0'
+      }
       if(!localStorage.getItem("trading-token")) {
         this.navText = "Login"
       }
@@ -142,10 +171,38 @@ export default {
               })
         }
       }
-    }
+      this.searchKeyword = this.$route.query.keywords
+    },
   },
   async created() {
     var currentPath = this.$route.path
+    if (currentPath === '/Search') {
+      this.activeIndex2 = "0"
+    }
+    if(currentPath === '/Login') {
+      this.activeIndex2 = '5'
+    }
+    if (currentPath === '/BuyerOrderList') {
+      this.activeIndex2 = '4-1'
+    }
+    if (currentPath === "/ItemList") {
+      this.activeIndex2 = "3-1"
+    }
+    if(currentPath === "/SellerOrderList") {
+      this.activeIndex2 = "3-2"
+    }
+    if (currentPath === '/SellNewProduct') {
+      this.activeIndex2 = "3-3"
+    }
+    if(currentPath === '/') {
+      this.activeIndex2 = "1"
+    }
+    if (currentPath === '/My'){
+      this.activeIndex2 = '2'
+    }
+    if (currentPath === '/Order/Details' || currentPath === '/Order/Create') {
+      this.activeIndex2 = '0'
+    }
     if(!localStorage.getItem("trading-token")) {
       this.navText = "Login"
     }
@@ -169,6 +226,7 @@ export default {
                     }
                   })
       }
+      this.searchKeyword = this.$route.query.keywords
     }
   }
 };

@@ -72,6 +72,11 @@ const routes = [
         component: () => import('../views/Order/Create.vue')
       }
     ]
+  },
+  {
+    path: '/Search',
+    name: 'Search',
+    component: () => import('../views/Buyer/ItemResultList')
   }
 ]
 

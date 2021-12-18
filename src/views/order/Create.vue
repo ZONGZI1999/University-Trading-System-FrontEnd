@@ -60,7 +60,9 @@
               <div class="item-label">Current State</div>
             </template>
             <div class="item-label">
+              <el-tag :type="tagType(orderInfo.orderStatus)">
               {{ orderInfo.orderStatus }}
+              </el-tag>
             </div>
           </el-descriptions-item>
           <!-- Order No -->
@@ -219,7 +221,7 @@
               </el-input>
 
               <div class="price-title">
-                $ 10.00
+                $ {{itemDetails.itemPrice/100.00}}
                 <div style="position: absolute; right: 75px">
                   <el-button
                     v-if="buttonName.button1 != ''"
@@ -348,8 +350,8 @@
       </el-dialog>
 
       <!-- Test Button -->
-      <el-button type="primary" @click="stepInc">+</el-button>
-      <el-button type="success" @click="stepDes">-</el-button>
+      <el-button type="primary" v-if="false" @click="stepInc">+</el-button>
+      <el-button type="success" v-if="false" @click="stepDes">-</el-button>
     </div>
     <el-empty v-if="!showAll" description="ERROR"></el-empty>
   </div>
@@ -442,6 +444,7 @@ export default {
       },
       itemDetails: {
         itemId: 0,
+        itemPrice: 0,
         itemTitle: "",
         pic: [],
       },
@@ -612,6 +615,8 @@ export default {
                     console.log(respData);
                     that.itemDetails.itemTitle = respData.itemTitle;
                     that.itemDetails.pic = respData.itemImage;
+                    that.itemDetails.itemPrice = respData.itemPrice
+
                   });
                 that.$message({
                   message: "Create order successfully",
@@ -637,6 +642,20 @@ export default {
               }
             });
         }
+      }
+      if (this.step == 1) {
+        this.axios.post("http://localhost:8081/order/payOrder", {orderId: this.$route.query.orderId})
+                  .then(resp => {
+                    if (resp.data.code === 0){
+                      this.step++
+                      this.$message.success("Pay this order success!")
+                    } else {
+                      this.$message.error(resp.data.description)
+                    }
+                  })
+                  .catch(err => {
+                    this.$message.error(err.toString())
+                  })
       }
       if (this.step == 2) {
         this.setDeliveryInfoIsShow = true;
@@ -710,7 +729,35 @@ export default {
       if (this.step === 0) {
         this.$router.push({path: "/ItemDetail", query: {id: this.$route.query.id}})
       }
-      console.log("Button 2 Click");
+      if (this.step === 1) {
+        console.log("just create")
+        this.axios.post("http://localhost:8081/order/closeOrder", {orderId: this.$route.query.orderId})
+                  .then(resp => {
+                    if (resp.data.code === 0) {
+                      this.$message.success("Order has been closed!")
+                      this.$router.push("/My")
+                    }else {
+                      this.$message.error(resp.data.description)
+                    }
+                  })
+                  .catch(err => {
+                    this.$message.error(err.toString())
+                  })
+      }
+      if (this.step === 2) {
+        this.axios.post("http://localhost:8081/order/closeOrder", {orderId: this.$route.query.orderId})
+            .then(resp => {
+              if (resp.data.code === 0) {
+                this.$message.success("Order has been closed!")
+                this.$router.push("/My")
+              }else {
+                this.$message.error(resp.data.description)
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.toString())
+            })
+      }
     },
     onClickDelivery() {
       var sendData = {};
@@ -746,6 +793,21 @@ export default {
                   });
                 })
       this.setDeliveryInfoIsShow = false
+    },
+    tagType(status){
+      if (status === "FINISH"){
+        return 'success'
+      }
+      if (status === 'HAS_REFUND'){
+        return "danger"
+      }
+      if (status === "CLOSED") {
+        return "warning"
+      }
+      if (status === "CREATED") {
+        return "info"
+      }
+      return ""
     }
   },
   watch: {
@@ -799,6 +861,25 @@ export default {
           this.buttonName.button1 = "";
           this.buttonName.button2 = "";
           break;
+        case 6: //closed
+          this.elStep = 1;
+          this.showModule.addressSelectButton = false
+          this.showModule.deliveryInfo = false;
+          this.textIsReadOnly = true;
+          this.buttonName.button1 = "";
+          this.buttonName.button2 = "";
+          this.stepStatus.Paid = "error"
+          break;
+        case 7: //paid
+          this.elStep = 2;
+          this.showModule.addressSelectButton = false;
+          this.showModule.deliveryInfo = false;
+          this.textIsReadOnly = true;
+          this.stepStatus.Delivery = 'error'
+          this.buttonName.button1 = "";
+          this.buttonName.button2 = "";
+          break;
+
         default:
           console.log(this.step);
           break;
@@ -848,6 +929,30 @@ export default {
           var respData = resp.data.data;
           if (resp.data.code == 0) {
             switch (respData.orderStatus) {
+              case "CLOSED":
+                console.log(respData)
+                that.step = 6;
+                order.delivery.address = respData.deliveryInfo
+                order.orderStatus = respData.orderStatus;
+                order.orderDetails.orderNo = respData.orderId;
+                order.orderDetails.buyer = respData.buyerId;
+                order.orderDetails.seller = respData.sellerId;
+                that.remark = respData.remark;
+                that.itemDetails.itemId = respData.itemId;
+                break;
+              case "HAS_REFUND":
+                console.log(respData)
+                that.step = 7;
+                order.orderStatus = respData.orderStatus;
+                order.orderDetails.orderNo = respData.orderId;
+                order.orderDetails.buyer = respData.buyerId;
+                order.orderDetails.seller = respData.sellerId;
+                order.payment.paymentNo = respData.payNo;
+                order.payment.paymentMethod = "Balance";
+                that.remark = respData.remark;
+                that.itemDetails.itemId = respData.itemId;
+                order.delivery.address = respData.deliveryInfo
+                break;
               case "CREATED":
                 if (respData.buyerId !== localStorage.getItem("studentId")) {
                   console.log("not equal")
@@ -953,6 +1058,7 @@ export default {
           console.log(respData);
           that.itemDetails.itemTitle = respData.itemTitle;
           that.itemDetails.pic = respData.itemImage;
+          that.itemDetails.itemPrice = respData.itemPrice
         })
         .catch((err) => {
           console.log(err);
@@ -981,6 +1087,7 @@ export default {
             console.log(respData);
             that.itemDetails.itemTitle = respData.itemTitle;
             that.itemDetails.pic = respData.itemImage;
+            that.itemDetails.itemPrice = respData.itemPrice
             if (respData.itemStatus == "SOLD") {
               that.showAll = false;
               this.$alert("This item has sold!", "Error", {

@@ -19,7 +19,7 @@
       <el-col :span="4" v-for="(item, index) in showList" :key="index">
         <el-card style="margin: 5px" :body-style="{ padding: '0px' }">
           <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+            :src="item.pic"
             class="image"
           />
           <div style="padding: 14px">
@@ -54,14 +54,14 @@
       <el-col :span="4" v-for="(item, index) in showList" :key="index">
         <el-card style="margin: 5px" :body-style="{ padding: '0px' }">
           <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+            :src="item.pic"
             class="image"
           />
           <div style="padding: 14px">
             <span>{{ item.title }}</span>
             <div class="bottom clearfix">
               <time class="time">{{ item.price }}</time>
-              <el-button type="text" class="button">View</el-button>
+              <el-button type="text" class="button" @click="viewItem(item.id)">View</el-button>
             </div>
           </div>
         </el-card>
@@ -132,21 +132,40 @@ export default {
         for(var i = (page-1)*6; i < page*6 && i < this.showItem.length; i++){
             this.showList.push(this.showItem[i])
         }
+    },
+    viewItem(itemId) {
+      this.$router.push({path: "/ItemDetail", query: {id: itemId}})
     }
   },
-  created() {
-    for (var i = 0; i < 11; i++) {
-      var addVar = {
-        title: "Test",
-        price: "$ "+ i + ".00",
-      };
-      this.showItem.push(addVar);
-    }
+  async created() {
+    const that = this
+    await this.axios.get("http://localhost:8081/HomePage/getNewSell")
+              .then(resp => {
+                let newSell = resp.data.data
+                for (let index = 0; index < newSell.length; index++) {
+                  let addVar = {
+                    title: newSell[index].itemTitle,
+                    price: "$ " + newSell[index].itemPrice /100.00,
+                    id: newSell[index].itemId,
+                    pic: newSell[index].itemImage[0]
+                  }
+                  that.showItem.push(addVar)
+                }
+              })
+    console.log(this.showItem)
+    // for (var i = 0; i < 11; i++) {
+    //   var addVar = {
+    //     title: "Test",
+    //     price: "$ "+ i + ".00",
+    //   };
+    //   this.showItem.push(addVar);
+    // }
 
     this.showList = []
     for(var i = 0; i < 6 && i < this.showItem.length; i++){
         this.showList.push(this.showItem[i])
     }
+    console.log(this.showList)
   },
 };
 </script>

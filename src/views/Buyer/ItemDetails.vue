@@ -27,10 +27,10 @@
                     placement="right"
                     width="400"
                     trigger="hover">
-                  数据
+                  {{seller}}@xmu.edu.my
                   <div style="display: table;" slot="reference">
-                    <el-avatar size="small" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
-                    <div style="display: table-cell;vertical-align: middle;" class="sub-title">{{seller}}</div>
+                    <b>Seller: &emsp;</b>
+                    <div style="display: table-cell;vertical-align: middle;" class="sub-title">{{sellerName}}</div>
                   </div>
                 </el-popover>
 
@@ -128,6 +128,7 @@
         err_msg: "",
         title: "",
         price: "",
+        sellerName: "",
         seller: "",
         itemId: 0,
         itemStatus: ""
@@ -163,6 +164,13 @@
                           that.title = respData.itemTitle
                           that.price = (respData.itemPrice) / 100.00
                           that.seller = respData.sellerId
+                          this.axios.get('http://localhost:8081/student/getByStudentId', {params:{studentId: respData.sellerId}})
+                              .then(resp => {
+                                console.log(resp)
+                                if (resp.data.code === 0) {
+                                  that.sellerName = resp.data.data.studentName
+                                }
+                              })
                           that.itemStatus = respData.itemStatus
                           console.log(that.picList);
                         }else {

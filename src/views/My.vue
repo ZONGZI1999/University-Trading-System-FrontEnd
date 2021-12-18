@@ -101,7 +101,7 @@ export default {
   },
   methods:{
     viewBuyerOrder() {
-      this.$router.push("/buyerOrderList")
+      this.$router.push("/BuyerOrderList")
     },
     viewSellerOrder() {
       this.$router.push("/SellerOrderList")
