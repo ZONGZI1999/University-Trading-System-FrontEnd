@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="errDesc === ''" >
+    <div v-if="errDesc === ''">
       <!-- Item Details -->
       <el-container>
         <div style="width: 100%">
@@ -13,7 +13,7 @@
               >
                 <template slot="error">
                   <div style="text-align: center;">
-                    <img :src="errPath"  alt="100px"/> <br />
+                    <img :src="errPath" alt="100px"/> <br/>
                     Please Upload Image
                   </div>
                 </template>
@@ -96,14 +96,16 @@
                     type="primary"
                     @click="upOrDownDesc(index, -1)"
                     style="margin-right: 5px"
-                >Up</el-link
+                >Up
+                </el-link
                 >
                 <el-link
                     v-if="index + 1 != descriptions.length"
                     @click="upOrDownDesc(index, +1)"
                     type="primary"
                     style="margin-right: 5px"
-                >Down</el-link
+                >Down
+                </el-link
                 >
                 <el-popconfirm
                     title="Are you sure to remove this description?"
@@ -123,7 +125,7 @@
         </div>
       </el-container>
     </div>
-      <el-empty v-if="errDesc!==''" :description="errDesc"></el-empty>
+    <el-empty v-if="errDesc!==''" :description="errDesc"></el-empty>
   </div>
 </template>
 
@@ -131,20 +133,25 @@
 .text {
   font-size: 14px;
 }
+
 .el-container {
   margin-top: 20px;
 }
+
 .item {
   margin-bottom: 10px;
 }
+
 .label-style {
   text-align: center;
 }
+
 .clearfix:before,
 .clearfix:after {
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both;
 }
@@ -185,24 +192,21 @@ export default {
       desc: "",
       title: "",
       price: "",
-      fileList: [
-
-      ],
+      fileList: [],
       imageURL: [],
-      descriptions: [
-        ],
+      descriptions: [],
       errPath: require("@/assets/forbidden.png")
     };
   },
   methods: {
-    successUpload(response, file, fileList){
+    successUpload(response, file, fileList) {
       console.log("SUCCESS", response, file, fileList)
       this.imageURL.push("http://localhost:8081/download?fileName=" + response.filePath)
     },
-    onRemove(file, fileList){
+    onRemove(file, fileList) {
       console.log("REMOVE", file, fileList)
       for (var index = 0; index < this.imageURL.length; index++) {
-        if (this.imageURL[index] == 'http://localhost:8081/download?fileName='+file.response.filePath) {
+        if (this.imageURL[index] == 'http://localhost:8081/download?fileName=' + file.response.filePath) {
           this.imageURL.splice(index, 1)
           break;
         }
@@ -232,10 +236,10 @@ export default {
       console.log("post new one");
       console.log();
       var image = this.imageURL;
-      var isNum=/^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
-      if (!isNum.test(this.price+"")){
+      var isNum = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
+      if (!isNum.test(this.price + "")) {
         this.$message.error("Price Format is error!")
-        return ;
+        return;
       }
       var sendData = {
         itemTitle: this.title,
@@ -250,32 +254,32 @@ export default {
         sendData['itemId'] = this.$route.query.id
       }
       this.axios
-        .post(URL, sendData)
-        .then((resp) => {
-          if(resp.data.code == 0) {
-            var id = resp.data.data.itemId
-            that.$alert("Successfully Post!", "Notice", {
-              confirmButtonText: "View It",
-              callback: (action) => {
-                console.log("OK");
-                that.$router.push({
-                  path: "/ItemDetail",
-                  query: {
-                    id: id,
-                  },
-                });
-              },
-            });
-          } else {
-            that.$alert(resp.data.description, resp.data.message, {
-              confirmButtonText: "OK",
-              callback: (action) => {
-              },
-            });
-          }
-          console.log(resp);
+          .post(URL, sendData)
+          .then((resp) => {
+            if (resp.data.code == 0) {
+              var id = resp.data.data.itemId
+              that.$alert("Successfully Post!", "Notice", {
+                confirmButtonText: "View It",
+                callback: (action) => {
+                  console.log("OK");
+                  that.$router.push({
+                    path: "/ItemDetail",
+                    query: {
+                      id: id,
+                    },
+                  });
+                },
+              });
+            } else {
+              that.$alert(resp.data.description, resp.data.message, {
+                confirmButtonText: "OK",
+                callback: (action) => {
+                },
+              });
+            }
+            console.log(resp);
 
-        });
+          });
     },
   },
   created() {
@@ -283,25 +287,25 @@ export default {
     if (this.$route.path == '/EditProductInfo') {
       var that = this
       this.mode = "UPDATE"
-      this.axios.get("http://localhost:8081/item/queryOneItem", {params:{itemId: this.$route.query.id}})
-                .then(resp => {
-                  if(resp.data.code == 0) {
-                    if (resp.data.data.itemStatus !== "ON_SELL"){
-                      this.errDesc = "This item is SOLD, you cannot modify it!"
-                      return ;
-                    }
-                    console.log(resp)
-                    var respData = resp.data.data
-                    that.title = respData.itemTitle
-                    that.price = respData.itemPrice/100.00
-                    that.descriptions = respData.itemDescription
-                    that.imageURL = respData.itemImage
-                  } else {
-                    this.$message.error(resp.data.message + ": " + resp.data.description)
-                    this.errDesc = resp.data.message + ": " + resp.data.description
-                  }
+      this.axios.get("http://localhost:8081/item/queryOneItem", {params: {itemId: this.$route.query.id}})
+          .then(resp => {
+            if (resp.data.code == 0) {
+              if (resp.data.data.itemStatus !== "ON_SELL") {
+                this.errDesc = "This item is SOLD, you cannot modify it!"
+                return;
+              }
+              console.log(resp)
+              var respData = resp.data.data
+              that.title = respData.itemTitle
+              that.price = respData.itemPrice / 100.00
+              that.descriptions = respData.itemDescription
+              that.imageURL = respData.itemImage
+            } else {
+              this.$message.error(resp.data.message + ": " + resp.data.description)
+              this.errDesc = resp.data.message + ": " + resp.data.description
+            }
 
-                })
+          })
     }
   }
 };

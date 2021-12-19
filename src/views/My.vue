@@ -11,10 +11,11 @@
           <div slot="header" class="clearfix">
             <span>Balance</span>
             <el-button style="float: right; padding: 3px 0" type="text"
-              >Top Up</el-button
+            >Top Up
+            </el-button
             >
           </div>
-          <h2>$ {{balance/100.00}}</h2>
+          <h2>$ {{ balance / 100.00 }}</h2>
         </el-card>
       </el-col>
       <!-- Buyer -->
@@ -23,11 +24,14 @@
           <div slot="header" class="clearfix">
             <span>Buyer Order</span>
             <el-button style="float: right; padding: 3px 0" type="text" @click="viewBuyerOrder"
-              >View</el-button
+            >View
+            </el-button
             >
           </div>
           <h2>
-            Paid: {{buyerPaid}} <el-divider direction="vertical" /> On Delivery: {{buyerDelivery}}
+            Paid: {{ buyerPaid }}
+            <el-divider direction="vertical"/>
+            On Delivery: {{ buyerDelivery }}
           </h2>
         </el-card>
       </el-col>
@@ -36,12 +40,16 @@
           <div slot="header" class="clearfix">
             <span>Seller Order</span>
             <el-button style="float: right; padding: 3px 0" type="text" @click="viewSellerOrder"
-              >View</el-button
+            >View
+            </el-button
             >
           </div>
           <h2>
-            Unsold: {{sellerUnsold}}<el-divider direction="vertical"></el-divider>Paid: {{sellerPaid}}
-            <el-divider direction="vertical"></el-divider>Delivery: {{ sellerDelivery }}
+            Unsold: {{ sellerUnsold }}
+            <el-divider direction="vertical"></el-divider>
+            Paid: {{ sellerPaid }}
+            <el-divider direction="vertical"></el-divider>
+            Delivery: {{ sellerDelivery }}
           </h2>
         </el-card>
       </el-col>
@@ -51,15 +59,15 @@
     <el-table :data="evaluationData" style="width: 100%" max-height="250">
       <el-table-column fixed prop="orderCreateDate" label="Evaluation Date" sortable width="200">
       </el-table-column>
-      <el-table-column prop="itemTitle" label="Item Title" width="120"> </el-table-column>
+      <el-table-column prop="itemTitle" label="Item Title" width="120"></el-table-column>
       <el-table-column prop="evaluationFromBuyer" label="Evaluation From Buyer"></el-table-column>
       <el-table-column prop="evaluationFromSeller" label="Evaluation From Seller"></el-table-column>
       <el-table-column fixed="right" label="Operation" width="120">
         <template slot-scope="scope">
           <el-button
-            @click.native.prevent="deleteRow(scope.$index, evaluationData)"
-            type="text"
-            size="small"
+              @click.native.prevent="deleteRow(scope.$index, evaluationData)"
+              type="text"
+              size="small"
           >
             View
           </el-button>
@@ -75,6 +83,7 @@
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both;
 }
@@ -88,9 +97,7 @@
 export default {
   data() {
     return {
-      evaluationData: [
-
-      ],
+      evaluationData: [],
       buyerPaid: 0,
       buyerDelivery: 0,
       sellerUnsold: 0,
@@ -99,7 +106,7 @@ export default {
       balance: 0
     };
   },
-  methods:{
+  methods: {
     viewBuyerOrder() {
       this.$router.push("/BuyerOrderList")
     },
@@ -109,10 +116,10 @@ export default {
   },
   async created() {
     let respData
-    await this.axios.get("http://localhost:8081/order/queryOrderList/all", {params:{studentId:"SWE1809388"}})
+    await this.axios.get("http://localhost:8081/order/queryOrderList/all", {params: {studentId: "SWE1809388"}})
         .then(resp => {
           console.log(resp)
-          if(resp.data.code == 0) {
+          if (resp.data.code == 0) {
             respData = resp.data.data
           } else {
             this.$message.error(resp.data.description)
@@ -128,19 +135,19 @@ export default {
         continue
       }
       var itemTitle;
-      await this.axios.get("http://localhost:8081/item/queryOneItem", {params:{itemId: respData[index].itemId}})
+      await this.axios.get("http://localhost:8081/item/queryOneItem", {params: {itemId: respData[index].itemId}})
           .then(resp => {
-            if(resp.data.code == 0 ) {
+            if (resp.data.code == 0) {
               itemTitle = resp.data.data.itemTitle
             } else {
               this.$message.error(resp.data.description)
               return false;
             }
           })
-      .catch(err=>{
-        this.$message.error("Internal error")
-        return false;
-      })
+          .catch(err => {
+            this.$message.error("Internal error")
+            return false;
+          })
       this.evaluationData.push({
         orderCreateDate: respData[index].createTime,
         itemTitle: itemTitle,
@@ -148,53 +155,53 @@ export default {
         evaluationFromSeller: respData[index].sellerEvaluation
       })
     }
-    await this.axios.get("http://localhost:8081/order/queryOrderList/buyer", {params:{studentId:"SWE1809388"}})
+    await this.axios.get("http://localhost:8081/order/queryOrderList/buyer", {params: {studentId: "SWE1809388"}})
         .then(resp => {
-          if(resp.data.code == 0) {
+          if (resp.data.code == 0) {
             respData = resp.data.data
           }
         })
     for (var index = 0; index < respData.length; index++) {
-      if (respData[index].orderStatus == 'PAID'){
+      if (respData[index].orderStatus == 'PAID') {
         this.buyerPaid++
       }
-      if (respData[index].orderStatus == 'ON_DELIVERY'){
+      if (respData[index].orderStatus == 'ON_DELIVERY') {
         this.buyerDelivery++
       }
     }
-    await this.axios.get("http://localhost:8081/order/queryOrderList/seller", {params:{studentId:"SWE1809387"}})
+    await this.axios.get("http://localhost:8081/order/queryOrderList/seller", {params: {studentId: "SWE1809387"}})
         .then(resp => {
-          if(resp.data.code == 0) {
+          if (resp.data.code == 0) {
             respData = resp.data.data
           }
         })
     for (var index = 0; index < respData.length; index++) {
-      if (respData[index].orderStatus == 'PAID'){
+      if (respData[index].orderStatus == 'PAID') {
         this.sellerPaid++
       }
-      if (respData[index].orderStatus == 'ON_DELIVERY'){
+      if (respData[index].orderStatus == 'ON_DELIVERY') {
         this.sellerDelivery++
       }
     }
     await this.axios.get("http://localhost:8081/item/queryItems")
         .then(resp => {
           console.log(resp)
-          if(resp.data.code == 0) {
+          if (resp.data.code == 0) {
             respData = resp.data.data
           }
         })
     for (var index = 0; index < respData.length; index++) {
-      if (respData[index].itemStatus == 'ON_SELL'){
+      if (respData[index].itemStatus == 'ON_SELL') {
         this.sellerUnsold++
       }
     }
     await this.axios.get("http://localhost:8081/balance/queryBalance")
-                    .then(resp => {
-                      console.log(resp)
-                      if(resp.data.code == 0) {
-                        this.balance = resp.data.data.balance
-                      }
-                    })
+        .then(resp => {
+          console.log(resp)
+          if (resp.data.code == 0) {
+            this.balance = resp.data.data.balance
+          }
+        })
 
   }
 };

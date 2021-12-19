@@ -6,13 +6,13 @@
         <el-table-column label="Pic." width="250">
           <template slot-scope="scope">
             <el-image
-              style="width: 200px"
-              :src="scope.row.pic.main"
-              :preview-src-list="scope.row.pic.picList"
+                style="width: 200px"
+                :src="scope.row.pic.main"
+                :preview-src-list="scope.row.pic.picList"
             >
               <template slot="error">
                 <div style="text-align: center; height: 100px">
-                NO IMAGE GIVEN
+                  NO IMAGE GIVEN
                 </div>
               </template>
             </el-image>
@@ -29,28 +29,30 @@
             :filter-method="filterTag"
             filter-placement="bottom-end">
           <template slot-scope="scope">
-            <el-tag :type="tagType(scope.row.status)">{{scope.row.status}}</el-tag>
+            <el-tag :type="tagType(scope.row.status)">{{ scope.row.status }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="price" sortable label="Price" width="200">
           <template slot-scope="scope">
-            $ {{scope.row.price}}
+            $ {{ scope.row.price }}
           </template>
         </el-table-column>
         <el-table-column prop="tag" label="Operation" width="200">
           <template slot-scope="scope">
             <el-link
-              style="margin: 5px"
-              type="primary"
-              v-if="scope.row.orderId != null"
-              @click="viewOrderDetails(scope.row.id, scope.row.orderId)"
-              >View Order</el-link
+                style="margin: 5px"
+                type="primary"
+                v-if="scope.row.orderId != null"
+                @click="viewOrderDetails(scope.row.id, scope.row.orderId)"
+            >View Order
+            </el-link
             >
             <el-link
                 style="margin: 5px"
                 type="primary"
                 @click="viewOrderDetails(scope.row.id, null)"
-            >View Item</el-link
+            >View Item
+            </el-link
             >
           </template>
         </el-table-column>
@@ -59,11 +61,11 @@
 
     <el-container>
       <el-pagination
-        :hide-on-single-page="false"
-        :total="orderList.length"
-        layout="prev, pager, next"
-        style="margin: 0 auto; margin-top: 15px"
-        @current-change="pageChange"
+          :hide-on-single-page="false"
+          :total="orderList.length"
+          layout="prev, pager, next"
+          style="margin: 0 auto; margin-top: 15px"
+          @current-change="pageChange"
       >
       </el-pagination>
     </el-container>
@@ -75,6 +77,7 @@
 
 <script>
 import $ from "jquery";
+
 export default {
   data() {
     return {
@@ -84,15 +87,15 @@ export default {
       showList: [
         // use to store result showing to user
       ],
-      stepToText:[
-        { text: 'ON_SELL', value: '8'},
-        { text: 'CREATED', value: '0'},
-        { text: 'PAID', value: '1'},
-        { text: 'ON_DELIVERY', value: '2'},
-        { text: 'ON_RECEIVED', value: '3'},
-        { text: 'FINISH', value: '4'},
-        { text: 'HAS_REFUND', value: '6'},
-        { text: 'CLOSED', value: '7'},
+      stepToText: [
+        {text: 'ON_SELL', value: '8'},
+        {text: 'CREATED', value: '0'},
+        {text: 'PAID', value: '1'},
+        {text: 'ON_DELIVERY', value: '2'},
+        {text: 'ON_RECEIVED', value: '3'},
+        {text: 'FINISH', value: '4'},
+        {text: 'HAS_REFUND', value: '6'},
+        {text: 'CLOSED', value: '7'},
       ],
       valueToText: {
         8: "ON_SELL",
@@ -112,19 +115,19 @@ export default {
       return row.status === this.valueToText[value];
     },
     pageChange(page) {
-      $("html, body").animate({ scrollTop: 0 }, 400); //Scroll to Top
+      $("html, body").animate({scrollTop: 0}, 400); //Scroll to Top
       this.showList = [];
       for (
-        var i = (page - 1) * 10;
-        i < page * 10 && i < this.orderList.length;
-        i++
+          var i = (page - 1) * 10;
+          i < page * 10 && i < this.orderList.length;
+          i++
       ) {
         this.showList.push(this.orderList[i]);
       }
     },
     viewOrderDetails(id, orderId) {
       console.log(id);
-      if(orderId != null) {
+      if (orderId != null) {
         this.$router.push({
           path: "/Order/Details",
           query: {
@@ -141,11 +144,11 @@ export default {
       }
 
     },
-    tagType(status){
-      if (status === "FINISH"){
+    tagType(status) {
+      if (status === "FINISH") {
         return 'success'
       }
-      if (status === 'HAS_REFUND'){
+      if (status === 'HAS_REFUND') {
         return "danger"
       }
       if (status === "CLOSED") {
@@ -158,8 +161,8 @@ export default {
     }
 
   },
-  watch:{
-    $route(){
+  watch: {
+    $route() {
       this.$router.go(0)
     }
   },
@@ -179,7 +182,7 @@ export default {
                   continue;
                 }
                 var studentName
-                await this.axios.get('http://localhost:8081/student/getByStudentId', {params:{studentId: respData[i].sellerId}})
+                await this.axios.get('http://localhost:8081/student/getByStudentId', {params: {studentId: respData[i].sellerId}})
                     .then(resp => {
                       console.log(resp)
                       if (resp.data.code === 0) {
@@ -196,7 +199,7 @@ export default {
                   item: respData[i].itemTitle,
                   seller: studentName,
                   orderId: orderId,
-                  createTime : respData[i].createTime,
+                  createTime: respData[i].createTime,
                   price: respData[i].itemPrice / 100.0,
                 };
                 console.log(needToPush);
@@ -221,7 +224,7 @@ export default {
                 if (status == 'SOLD') {
                   await this.axios.get("http://localhost:8081/order/queryOrderByItemId", {params: {itemId: respData[i].itemId}})
                       .then(resp => {
-                        if(resp.data.code == 0) {
+                        if (resp.data.code == 0) {
                           status = resp.data.data.orderStatus
                           orderId = resp.data.data.orderId
                         } else {

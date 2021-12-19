@@ -5,22 +5,22 @@
       <el-carousel indicator-position="outside">
         <el-carousel-item v-for="item in 4" :key="item">
           <img
-            src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
-            style="height: 100%; width: 100%"
+              src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"
+              style="height: 100%; width: 100%"
           />
         </el-carousel-item>
       </el-carousel>
     </div>
-    <el-row >
+    <el-row>
       <!-- New For Sell -->
       <el-col>
-          <h1 style="text-align: center">New For Sell</h1>
+        <h1 style="text-align: center">New For Sell</h1>
       </el-col>
       <el-col :span="4" v-for="(item, index) in showList" :key="index">
         <el-card style="margin: 5px" :body-style="{ padding: '0px' }">
           <img
-            :src="item.pic"
-            class="image"
+              :src="item.pic"
+              class="image"
           />
           <div style="padding: 14px">
             <span>{{ item.title }}</span>
@@ -35,27 +35,27 @@
         <el-container>
           <div style="margin: 0 auto">
             <el-pagination
-              :hide-on-single-page="true"
-              :total="showItem.length"
-              :page-size="6"
-              layout="prev, pager, next"
-              @current-change="pageChange"
+                :hide-on-single-page="true"
+                :total="showItem.length"
+                :page-size="6"
+                layout="prev, pager, next"
+                @current-change="pageChange"
             >
             </el-pagination>
           </div>
         </el-container>
-      </el-col>      
+      </el-col>
     </el-row>
-    <el-row >
+    <el-row>
       <!-- HOT -->
       <el-col>
-          <h1 style="text-align: center">HOT</h1>
+        <h1 style="text-align: center">HOT</h1>
       </el-col>
       <el-col :span="4" v-for="(item, index) in showList" :key="index">
         <el-card style="margin: 5px" :body-style="{ padding: '0px' }">
           <img
-            :src="item.pic"
-            class="image"
+              :src="item.pic"
+              class="image"
           />
           <div style="padding: 14px">
             <span>{{ item.title }}</span>
@@ -70,16 +70,16 @@
         <el-container>
           <div style="margin: 0 auto">
             <el-pagination
-              :hide-on-single-page="true"
-              :total="showItem.length"
-              :page-size="6"
-              layout="prev, pager, next"
-              @current-change="pageChange"
+                :hide-on-single-page="true"
+                :total="showItem.length"
+                :page-size="6"
+                layout="prev, pager, next"
+                @current-change="pageChange"
             >
             </el-pagination>
           </div>
         </el-container>
-      </el-col>      
+      </el-col>
     </el-row>
     <el-divider>END</el-divider>
   </div>
@@ -126,12 +126,12 @@ export default {
     };
   },
   methods: {
-    pageChange(page){
-        //$('html, body').animate({scrollTop:0}, 400); //Scroll to Top
-        this.showList = []
-        for(var i = (page-1)*6; i < page*6 && i < this.showItem.length; i++){
-            this.showList.push(this.showItem[i])
-        }
+    pageChange(page) {
+      //$('html, body').animate({scrollTop:0}, 400); //Scroll to Top
+      this.showList = []
+      for (var i = (page - 1) * 6; i < page * 6 && i < this.showItem.length; i++) {
+        this.showList.push(this.showItem[i])
+      }
     },
     viewItem(itemId) {
       this.$router.push({path: "/ItemDetail", query: {id: itemId}})
@@ -140,18 +140,18 @@ export default {
   async created() {
     const that = this
     await this.axios.get("http://localhost:8081/HomePage/getNewSell")
-              .then(resp => {
-                let newSell = resp.data.data
-                for (let index = 0; index < newSell.length; index++) {
-                  let addVar = {
-                    title: newSell[index].itemTitle,
-                    price: "$ " + newSell[index].itemPrice /100.00,
-                    id: newSell[index].itemId,
-                    pic: newSell[index].itemImage[0]
-                  }
-                  that.showItem.push(addVar)
-                }
-              })
+        .then(resp => {
+          let newSell = resp.data.data
+          for (let index = 0; index < newSell.length; index++) {
+            let addVar = {
+              title: newSell[index].itemTitle,
+              price: "$ " + newSell[index].itemPrice / 100.00,
+              id: newSell[index].itemId,
+              pic: newSell[index].itemImage[0]
+            }
+            that.showItem.push(addVar)
+          }
+        })
     console.log(this.showItem)
     // for (var i = 0; i < 11; i++) {
     //   var addVar = {
@@ -162,8 +162,8 @@ export default {
     // }
 
     this.showList = []
-    for(var i = 0; i < 6 && i < this.showItem.length; i++){
-        this.showList.push(this.showItem[i])
+    for (var i = 0; i < 6 && i < this.showItem.length; i++) {
+      this.showList.push(this.showItem[i])
     }
     console.log(this.showList)
   },

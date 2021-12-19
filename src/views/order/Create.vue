@@ -12,10 +12,10 @@
        Evaluation 6
      -->
       <el-steps
-        :active="elStep"
-        finish-status="success"
-        simple
-        style="margin-top: 20px"
+          :active="elStep"
+          finish-status="success"
+          simple
+          style="margin-top: 20px"
       >
         <el-step title="Create Order"></el-step>
         <el-step title="Paid Money" :status="stepStatus.Paid"></el-step>
@@ -27,10 +27,10 @@
       <!-- Order Details -->
       <el-container v-if="step > 0">
         <el-descriptions
-          :column="4"
-          style="width: 100%"
-          direction="vertical"
-          border
+            :column="4"
+            style="width: 100%"
+            direction="vertical"
+            border
         >
           <template slot="title">
             Order Details
@@ -42,7 +42,7 @@
             </template>
             <div class="item-label">
               <el-tag :type="tagType(orderInfo.orderStatus)">
-              {{ orderInfo.orderStatus }}
+                {{ orderInfo.orderStatus }}
               </el-tag>
             </div>
           </el-descriptions-item>
@@ -118,16 +118,17 @@
           <template slot="title">
             Delivery Address
             <el-button
-              v-if="showModule.addressSelectButton"
-              type="primary"
-              size="small"
-              @click="setDeliveryAddressIsShow = true"
-              >Select</el-button
+                v-if="showModule.addressSelectButton"
+                type="primary"
+                size="small"
+                @click="setDeliveryAddressIsShow = true"
+            >Select
+            </el-button
             >
           </template>
           <el-descriptions-item
-            :span="2"
-            v-if="orderInfo.delivery.address.name != ''"
+              :span="2"
+              v-if="orderInfo.delivery.address.name != ''"
           >
             <template slot="label">
               <div class="item-label">Name</div>
@@ -135,8 +136,8 @@
             {{ orderInfo.delivery.address.name }}
           </el-descriptions-item>
           <el-descriptions-item
-            :span="2"
-            v-if="orderInfo.delivery.address.phoneNo != ''"
+              :span="2"
+              v-if="orderInfo.delivery.address.phoneNo != ''"
           >
             <template slot="label">
               <div class="item-label">Phone No.</div>
@@ -144,8 +145,8 @@
             {{ orderInfo.delivery.address.phoneNo }}
           </el-descriptions-item>
           <el-descriptions-item
-            :span="2"
-            v-if="orderInfo.delivery.address.address != ''"
+              :span="2"
+              v-if="orderInfo.delivery.address.address != ''"
           >
             <template slot="label">
               <div class="item-label">Delivery Address</div>
@@ -180,9 +181,9 @@
             <el-col :span="4">
               <div>
                 <el-image
-                  :src="itemDetails.pic[0]"
-                  fit="cover"
-                  :preview-src-list="itemDetails.pic"
+                    :src="itemDetails.pic[0]"
+                    fit="cover"
+                    :preview-src-list="itemDetails.pic"
                 >
                 </el-image>
               </div>
@@ -193,30 +194,30 @@
               </h3>
               <div class="sub-title">Remark To Seller</div>
               <el-input
-                type="textarea"
-                :rows="2"
-                placeholder="Remark To Seller"
-                v-model="remark"
-                :readonly="textIsReadOnly"
+                  type="textarea"
+                  :rows="2"
+                  placeholder="Remark To Seller"
+                  v-model="remark"
+                  :readonly="textIsReadOnly"
               >
               </el-input>
 
               <div class="price-title">
-                $ {{itemDetails.itemPrice/100.00}}
+                $ {{ itemDetails.itemPrice / 100.00 }}
                 <div style="position: absolute; right: 75px">
                   <el-button
-                    v-if="buttonName.button1 != ''"
-                    type="primary"
-                    @click="button1Click"
-                    :loading="buttonLoading.button1"
+                      v-if="buttonName.button1 != ''"
+                      type="primary"
+                      @click="button1Click"
+                      :loading="buttonLoading.button1"
                   >
                     {{ buttonName.button1 }}
                   </el-button>
                   <el-button
-                    v-if="buttonName.button2 != ''"
-                    type="danger"
-                    @click="button2Click"
-                    :loading="buttonLoading.button2"
+                      v-if="buttonName.button2 != ''"
+                      type="danger"
+                      @click="button2Click"
+                      :loading="buttonLoading.button2"
                   >
                     {{ buttonName.button2 }}
                   </el-button>
@@ -227,23 +228,23 @@
         </div>
       </el-container>
 
-      <el-container> </el-container>
+      <el-container></el-container>
 
       <!-- Choose Delivery Address -->
       <el-dialog
-        title="Choose a Delivery Address"
-        :visible.sync="setDeliveryAddressIsShow"
+          title="Choose a Delivery Address"
+          :visible.sync="setDeliveryAddressIsShow"
       >
         <el-table
-          :data="
+            :data="
             addressData.filter(
               (data) =>
                 !search ||
                 data.address.toLowerCase().includes(search.toLowerCase())
             )
           "
-          style="width: 100%"
-          max-height="1000"
+            style="width: 100%"
+            max-height="1000"
         >
           <el-table-column label="Name" prop="name" width="150" fixed="">
           </el-table-column>
@@ -253,38 +254,41 @@
           </el-table-column>
           <el-table-column align="center" min-width="100">
             <template slot="header">
-<!--              <el-input-->
-<!--                v-model="search"-->
-<!--                size="mini"-->
-<!--                placeholder="输入关键字搜索"-->
-<!--              />-->
+              <!--              <el-input-->
+              <!--                v-model="search"-->
+              <!--                size="mini"-->
+              <!--                placeholder="输入关键字搜索"-->
+              <!--              />-->
               <el-button size="mini" type="primary" @click="initEditAddress(true)">Add New Address</el-button>
             </template>
             <template slot-scope="scope">
               <div>
                 <el-button
-                  size="mini"
-                  @click="selectAddress(scope.$index, scope.row)"
+                    size="mini"
+                    @click="selectAddress(scope.$index, scope.row)"
                 >
                   Select
                 </el-button>
                 <el-button
-                  size="mini"
-                  type="info"
-                  @click="editAddress(scope.$index, scope.row)"
-                  >Edit</el-button
+                    size="mini"
+                    type="info"
+                    @click="editAddress(scope.$index, scope.row)"
+                >Edit
+                </el-button
                 >
                 <el-button
-                  size="mini"
-                  type="danger"
-                  @click="deleteAddress(scope.$index, scope.row)"
-                  >Delete</el-button
+                    size="mini"
+                    type="danger"
+                    @click="deleteAddress(scope.$index, scope.row)"
+                >Delete
+                </el-button
                 >
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <el-form v-if="showEditAddress" :inline="true" :model="editAddressData" size="mini" style="width: auto; margin-top: 20px">
+        <el-form v-if="showEditAddress" :inline="true" :model="editAddressData" size="mini"
+                 style="width: auto; margin-top: 20px">
           <el-form-item label="Name">
             <el-input v-model="editAddressData.name" placeholder="Name"></el-input>
           </el-form-item>
@@ -305,27 +309,28 @@
 
       <!-- Set Delivery Info -->
       <el-dialog
-        title="Set Delivery Address"
-        :visible.sync="setDeliveryInfoIsShow"
+          title="Set Delivery Address"
+          :visible.sync="setDeliveryInfoIsShow"
       >
         <el-form :model="orderInfo.delivery.trackingInfo">
           <el-form-item label="Delivery Company" label-width="160px">
             <el-input
-              v-model="orderInfo.delivery.trackingInfo.deliveryCompany"
-              autocomplete="off"
+                v-model="orderInfo.delivery.trackingInfo.deliveryCompany"
+                autocomplete="off"
             ></el-input>
           </el-form-item>
           <el-form-item label="Tracking No" label-width="160px">
             <el-input
-              v-model="orderInfo.delivery.trackingInfo.trackingNo"
-              autocomplete="off"
+                v-model="orderInfo.delivery.trackingInfo.trackingNo"
+                autocomplete="off"
             ></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="setDeliveryInfoIsShow = false">Cancel</el-button>
           <el-button type="primary" @click="onClickDelivery"
-            >Confirm</el-button
+          >Confirm
+          </el-button
           >
         </div>
       </el-dialog>
@@ -342,17 +347,21 @@
 .text {
   font-size: 14px;
 }
+
 .item {
   margin-bottom: 10px;
 }
+
 .label-style {
   text-align: center;
 }
+
 .clearfix:before,
 .clearfix:after {
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both;
 }
@@ -429,8 +438,7 @@ export default {
         itemTitle: "",
         pic: [],
       },
-      addressData: [
-      ],
+      addressData: [],
       showModule: {
         addressSelectButton: true,
         deliveryInfo: false,
@@ -501,39 +509,39 @@ export default {
     submitEditAddress() {
       var URL = ""
       var mode = ""
-      if(this.editAddressData.deliveryInfoId == 0) {
+      if (this.editAddressData.deliveryInfoId == 0) {
         mode = "insert"
-         URL = "http://localhost:8081/delivery/insertDeliveryInfo"
+        URL = "http://localhost:8081/delivery/insertDeliveryInfo"
       } else {
         mode = "update"
-         URL = "http://localhost:8081/delivery/updateDeliveryInfo"
+        URL = "http://localhost:8081/delivery/updateDeliveryInfo"
       }
       this.axios.post(URL, this.editAddressData)
-                .then(resp => {
-                  if(resp.data.code === 0) {
-                    if (mode == "update") {
-                      this.axios.get("http://localhost:8081/delivery/getDeliveryInfoList", {params: {studentId: "SWE1809388"}})
-                          .then(resp => {
-                            if(resp.data.code == 0) {
-                              this.addressData = resp.data.data
-                              this.$message.success("Successfully edit address.")
-                            } else {
-                              this.$message.error(resp.data.description)
-                            }
-                          })
-                    } else {
-                      this.addressData.push(resp.data.data)
-                      this.$message.success("Successfully add new address.")
-                    }
-                    this.initEditAddress(false)
-                  } else {
-                    console.log("error")
-                    this.$message.error(resp.data.description)
-                  }
-                })
-                .catch(err=> {
-                  console.log(err)
-                })
+          .then(resp => {
+            if (resp.data.code === 0) {
+              if (mode == "update") {
+                this.axios.get("http://localhost:8081/delivery/getDeliveryInfoList", {params: {studentId: "SWE1809388"}})
+                    .then(resp => {
+                      if (resp.data.code == 0) {
+                        this.addressData = resp.data.data
+                        this.$message.success("Successfully edit address.")
+                      } else {
+                        this.$message.error(resp.data.description)
+                      }
+                    })
+              } else {
+                this.addressData.push(resp.data.data)
+                this.$message.success("Successfully add new address.")
+              }
+              this.initEditAddress(false)
+            } else {
+              console.log("error")
+              this.$message.error(resp.data.description)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
 
 
     },
@@ -574,69 +582,69 @@ export default {
           sendData["deliveryInfo"] = this.orderInfo.delivery.address;
           sendData["remark"] = this.remark;
           this.axios
-            .post("http://localhost:8081/order/createOrder", sendData)
-            .then((resp) => {
-              console.log(resp);
-              if (resp.data.code == 0) {
-                var respData = resp.data.data;
-                that.step = 1;
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                order.delivery.address = respData.deliveryInfo
-                that.axios
-                  .get("http://localhost:8081/item/queryOneItem", {
-                    params: { itemId: this.itemDetails.itemId },
-                  })
-                  .then((resp) => {
-                    var respData = resp.data.data;
-                    console.log(respData);
-                    that.itemDetails.itemTitle = respData.itemTitle;
-                    that.itemDetails.pic = respData.itemImage;
-                    that.itemDetails.itemPrice = respData.itemPrice
+              .post("http://localhost:8081/order/createOrder", sendData)
+              .then((resp) => {
+                console.log(resp);
+                if (resp.data.code == 0) {
+                  var respData = resp.data.data;
+                  that.step = 1;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  that.axios
+                      .get("http://localhost:8081/item/queryOneItem", {
+                        params: {itemId: this.itemDetails.itemId},
+                      })
+                      .then((resp) => {
+                        var respData = resp.data.data;
+                        console.log(respData);
+                        that.itemDetails.itemTitle = respData.itemTitle;
+                        that.itemDetails.pic = respData.itemImage;
+                        that.itemDetails.itemPrice = respData.itemPrice
 
+                      });
+                  that.$message({
+                    message: "Create order successfully",
+                    type: "success",
                   });
-                that.$message({
-                  message: "Create order successfully",
-                  type: "success",
-                });
-                that.$router.push({
-                  path: "/Order/Details",
-                  query: {
-                    orderId: respData.orderId,
-                  },
-                });
-              } else {
-                that.$alert(
-                  resp.data.description,
-                  resp.data.message + ": Create Order Fail",
-                  {
-                    confirmButtonText: "OK",
-                    callback: (action) => {
-                      console.log("OK");
+                  that.$router.push({
+                    path: "/Order/Details",
+                    query: {
+                      orderId: respData.orderId,
                     },
-                  }
-                );
-              }
-            });
+                  });
+                } else {
+                  that.$alert(
+                      resp.data.description,
+                      resp.data.message + ": Create Order Fail",
+                      {
+                        confirmButtonText: "OK",
+                        callback: (action) => {
+                          console.log("OK");
+                        },
+                      }
+                  );
+                }
+              });
         }
       }
       if (this.step == 1) {
         this.axios.post("http://localhost:8081/order/payOrder", {orderId: this.$route.query.orderId})
-                  .then(resp => {
-                    if (resp.data.code === 0){
-                      this.step++
-                      this.$message.success("Pay this order success!")
-                    } else {
-                      this.$message.error(resp.data.description)
-                    }
-                  })
-                  .catch(err => {
-                    this.$message.error(err.toString())
-                  })
+            .then(resp => {
+              if (resp.data.code === 0) {
+                this.step++
+                this.$message.success("Pay this order success!")
+              } else {
+                this.$message.error(resp.data.description)
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.toString())
+            })
       }
       if (this.step == 2) {
         this.setDeliveryInfoIsShow = true;
@@ -647,25 +655,25 @@ export default {
         const that = this
         sendData['orderId'] = this.orderInfo.orderDetails.orderNo
         this.axios.post("http://localhost:8081/order/onConfirm", sendData)
-                  .then(resp => {
-                    console.log(resp)
-                    if(resp.data.code === 0) {
-                      that.step++
-                      this.$message.success("Success to confirm this order!")
-                    } else {
-                      this.$message.error(resp.data.message + ": "+ resp.data.description)
-                    }
-                  })
-                  .catch(err => {
-                    this.$message.error("UNKNOWN ERROR!")
-                  })
+            .then(resp => {
+              console.log(resp)
+              if (resp.data.code === 0) {
+                that.step++
+                this.$message.success("Success to confirm this order!")
+              } else {
+                this.$message.error(resp.data.message + ": " + resp.data.description)
+              }
+            })
+            .catch(err => {
+              this.$message.error("UNKNOWN ERROR!")
+            })
       }
       if (this.step == 4) {
-        if (this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId") && this.orderInfo.evaluation.buyer != null){
+        if (this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId") && this.orderInfo.evaluation.buyer != null) {
           this.$message.error("You have given evaluation!")
           return false
         }
-        if (this.orderInfo.orderDetails.seller === localStorage.getItem("studentId") && this.orderInfo.evaluation.seller != null){
+        if (this.orderInfo.orderDetails.seller === localStorage.getItem("studentId") && this.orderInfo.evaluation.seller != null) {
           this.$message.error("You have given evaluation!")
           return false
         }
@@ -673,7 +681,7 @@ export default {
         this.$prompt('Give evaluation', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
-        }).then(({ value }) => {
+        }).then(({value}) => {
           var sendData = {}
           sendData['orderId'] = that.orderInfo.orderDetails.orderNo
           if (this.orderInfo.orderDetails.seller === localStorage.getItem("studentId")) {
@@ -683,22 +691,22 @@ export default {
           }
 
           that.axios.post("http://localhost:8081/order/giveEvaluation", sendData)
-                    .then(resp => {
+              .then(resp => {
 
-                      if(resp.data.code == 0) {
-                        console.log("evaluation", resp)
-                        that.step++
-                        that.orderInfo.evaluation.seller = resp.data.data.sellerEvaluation
-                        that.orderInfo.evaluation.buyer = resp.data.data.buyerEvaluation
-                        this.$message({
-                          type: 'success',
-                          message: 'success to set evaluation!'
-                        });
-                      }else {
-                        this.$message.error(resp.data.message + " : " + resp.data.description )
-                      }
+                if (resp.data.code == 0) {
+                  console.log("evaluation", resp)
+                  that.step++
+                  that.orderInfo.evaluation.seller = resp.data.data.sellerEvaluation
+                  that.orderInfo.evaluation.buyer = resp.data.data.buyerEvaluation
+                  this.$message({
+                    type: 'success',
+                    message: 'success to set evaluation!'
+                  });
+                } else {
+                  this.$message.error(resp.data.message + " : " + resp.data.description)
+                }
 
-                    })
+              })
 
         }).catch((err) => {
           console.log(err)
@@ -713,17 +721,17 @@ export default {
       if (this.step === 1) {
         console.log("just create")
         this.axios.post("http://localhost:8081/order/closeOrder", {orderId: this.$route.query.orderId})
-                  .then(resp => {
-                    if (resp.data.code === 0) {
-                      this.$message.success("Order has been closed!")
-                      this.$router.push("/My")
-                    }else {
-                      this.$message.error(resp.data.description)
-                    }
-                  })
-                  .catch(err => {
-                    this.$message.error(err.toString())
-                  })
+            .then(resp => {
+              if (resp.data.code === 0) {
+                this.$message.success("Order has been closed!")
+                this.$router.push("/My")
+              } else {
+                this.$message.error(resp.data.description)
+              }
+            })
+            .catch(err => {
+              this.$message.error(err.toString())
+            })
       }
       if (this.step === 2) {
         this.axios.post("http://localhost:8081/order/closeOrder", {orderId: this.$route.query.orderId})
@@ -731,7 +739,7 @@ export default {
               if (resp.data.code === 0) {
                 this.$message.success("Order has been closed!")
                 this.$router.push("/My")
-              }else {
+              } else {
                 this.$message.error(resp.data.description)
               }
             })
@@ -748,38 +756,38 @@ export default {
       console.log(sendData)
       var that = this
       this.axios.post("http://localhost:8081/order/setDelivery", sendData)
-                .then(resp => {
-                  console.log(resp)
-                  if(resp.data.code === 0) {
-                    const respData = resp.data.data;
-                    that.step = 3
-                    that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
-                    that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
-                    that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
-                    this.$message({
-                      message: "Set delivery successfully!",
-                      type: "success",
-                    });
-                  } else {
-                    this.$message({
-                      message: "Set delivery failed!\nReason: " + resp.data.description,
-                      type: "warning",
-                    });
-                  }
-                })
-                .catch(err => {
-                  this.$message({
-                    message: "Set delivery failed!\nReason: UNKNOWN ERROR",
-                    type: "warning",
-                  });
-                })
+          .then(resp => {
+            console.log(resp)
+            if (resp.data.code === 0) {
+              const respData = resp.data.data;
+              that.step = 3
+              that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+              that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+              that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+              this.$message({
+                message: "Set delivery successfully!",
+                type: "success",
+              });
+            } else {
+              this.$message({
+                message: "Set delivery failed!\nReason: " + resp.data.description,
+                type: "warning",
+              });
+            }
+          })
+          .catch(err => {
+            this.$message({
+              message: "Set delivery failed!\nReason: UNKNOWN ERROR",
+              type: "warning",
+            });
+          })
       this.setDeliveryInfoIsShow = false
     },
-    tagType(status){
-      if (status === "FINISH"){
+    tagType(status) {
+      if (status === "FINISH") {
         return 'success'
       }
-      if (status === 'HAS_REFUND'){
+      if (status === 'HAS_REFUND') {
         return "danger"
       }
       if (status === "CLOSED") {
@@ -807,7 +815,7 @@ export default {
           this.showModule.addressSelectButton = this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId");
           this.showModule.deliveryInfo = false;
           this.textIsReadOnly = true;
-          this.buttonName.button1 = this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId") ? "Pay": "";
+          this.buttonName.button1 = this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId") ? "Pay" : "";
           this.buttonName.button2 = "Cancel Order";
           break;
         case 2: //paid
@@ -815,7 +823,7 @@ export default {
           this.showModule.addressSelectButton = false;
           this.showModule.deliveryInfo = false;
           this.textIsReadOnly = true;
-          this.buttonName.button1 = this.orderInfo.orderDetails.seller === localStorage.getItem("studentId") ? "Set Delivery Info": "";
+          this.buttonName.button1 = this.orderInfo.orderDetails.seller === localStorage.getItem("studentId") ? "Set Delivery Info" : "";
           this.buttonName.button2 = "Cancel Order";
           break;
         case 3:
@@ -870,14 +878,14 @@ export default {
     setDeliveryAddressIsShow() {
       if (this.setDeliveryAddressIsShow) {
         this.axios.get("http://localhost:8081/delivery/getDeliveryInfoList")
-                  .then(resp => {
-                    console.log(resp)
-                    if(resp.data.code == 0) {
-                      this.addressData = resp.data.data
-                    } else{
-                      this.$message.error(resp.data.message + ": " +resp.data.description)
-                    }
-                  })
+            .then(resp => {
+              console.log(resp)
+              if (resp.data.code == 0) {
+                this.addressData = resp.data.data
+              } else {
+                this.$message.error(resp.data.message + ": " + resp.data.description)
+              }
+            })
 
       }
     }
@@ -888,8 +896,8 @@ export default {
       var order = this.orderInfo;
       console.log(this.$route.query.orderId);
       if (
-        this.$route.query.orderId == "" ||
-        this.$route.query.orderId == null
+          this.$route.query.orderId == "" ||
+          this.$route.query.orderId == null
       ) {
         this.showAll = false;
         await this.$alert("Order not exist!", "Error", {
@@ -903,147 +911,147 @@ export default {
         return;
       }
       await this.axios
-        .get("http://localhost:8081/order/queryOrder", {
-          params: { orderId: this.$route.query.orderId },
-        })
-        .then((resp) => {
-          var respData = resp.data.data;
-          if (resp.data.code == 0) {
-            switch (respData.orderStatus) {
-              case "CLOSED":
-                console.log(respData)
-                that.step = 6;
-                order.delivery.address = respData.deliveryInfo
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                break;
-              case "HAS_REFUND":
-                console.log(respData)
-                that.step = 7;
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                order.payment.paymentNo = respData.payNo;
-                order.payment.paymentMethod = "Balance";
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                order.delivery.address = respData.deliveryInfo
-                break;
-              case "CREATED":
-                if (respData.buyerId !== localStorage.getItem("studentId")) {
-                  console.log("not equal")
-                  that.showModule.addressSelectButton = false
-                }
-                console.log(respData)
-                that.step = 1;
-                order.delivery.address = respData.deliveryInfo
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                break;
-              case "PAID":
-                that.step = 2;
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                order.payment.paymentNo = respData.payNo;
-                order.payment.paymentMethod = "Balance";
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                order.delivery.address = respData.deliveryInfo
-                break;
-              case "ON_DELIVERY":
-                that.step = 3;
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                order.payment.paymentNo = respData.payNo;
-                order.payment.paymentMethod = "Balance";
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                order.delivery.address = respData.deliveryInfo
-                that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
-                that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
-                that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
-                break;
-              case "ON_RECEIVED":
-                that.step = 4;
-                order.orderStatus = respData.orderStatus;
-                order.orderDetails.orderNo = respData.orderId;
-                order.orderDetails.buyer = respData.buyerId;
-                order.orderDetails.seller = respData.sellerId;
-                order.payment.paymentNo = respData.payNo;
-                order.payment.paymentMethod = "Balance";
-                that.remark = respData.remark;
-                that.itemDetails.itemId = respData.itemId;
-                order.delivery.address = respData.deliveryInfo
-                that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
-                that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
-                that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
-                console.log("evaluation", respData.sellerEvaluation)
-                console.log("evaluation", respData.buyerEvaluation)
-                that.orderInfo.evaluation.seller = respData.sellerEvaluation
-                that.orderInfo.evaluation.buyer = respData.buyerEvaluation
-                break;
-                  case "FINISH":
-                    that.step = 5;
-                    order.orderStatus = respData.orderStatus;
-                    order.orderDetails.orderNo = respData.orderId;
-                    order.orderDetails.buyer = respData.buyerId;
-                    order.orderDetails.seller = respData.sellerId;
-                    order.payment.paymentNo = respData.payNo;
-                    order.payment.paymentMethod = "Balance";
-                    that.remark = respData.remark;
-                    that.itemDetails.itemId = respData.itemId;
-                    order.delivery.address = respData.deliveryInfo
-                    that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
-                    that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
-                    that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
-                      that.orderInfo.evaluation.seller = respData.sellerEvaluation
-                      that.orderInfo.evaluation.buyer = respData.buyerEvaluation
-                    break;
+          .get("http://localhost:8081/order/queryOrder", {
+            params: {orderId: this.$route.query.orderId},
+          })
+          .then((resp) => {
+            var respData = resp.data.data;
+            if (resp.data.code == 0) {
+              switch (respData.orderStatus) {
+                case "CLOSED":
+                  console.log(respData)
+                  that.step = 6;
+                  order.delivery.address = respData.deliveryInfo
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  break;
+                case "HAS_REFUND":
+                  console.log(respData)
+                  that.step = 7;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  order.payment.paymentNo = respData.payNo;
+                  order.payment.paymentMethod = "Balance";
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  break;
+                case "CREATED":
+                  if (respData.buyerId !== localStorage.getItem("studentId")) {
+                    console.log("not equal")
+                    that.showModule.addressSelectButton = false
+                  }
+                  console.log(respData)
+                  that.step = 1;
+                  order.delivery.address = respData.deliveryInfo
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  break;
+                case "PAID":
+                  that.step = 2;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  order.payment.paymentNo = respData.payNo;
+                  order.payment.paymentMethod = "Balance";
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  break;
+                case "ON_DELIVERY":
+                  that.step = 3;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  order.payment.paymentNo = respData.payNo;
+                  order.payment.paymentMethod = "Balance";
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                  that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                  that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                  break;
+                case "ON_RECEIVED":
+                  that.step = 4;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  order.payment.paymentNo = respData.payNo;
+                  order.payment.paymentMethod = "Balance";
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                  that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                  that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                  console.log("evaluation", respData.sellerEvaluation)
+                  console.log("evaluation", respData.buyerEvaluation)
+                  that.orderInfo.evaluation.seller = respData.sellerEvaluation
+                  that.orderInfo.evaluation.buyer = respData.buyerEvaluation
+                  break;
+                case "FINISH":
+                  that.step = 5;
+                  order.orderStatus = respData.orderStatus;
+                  order.orderDetails.orderNo = respData.orderId;
+                  order.orderDetails.buyer = respData.buyerId;
+                  order.orderDetails.seller = respData.sellerId;
+                  order.payment.paymentNo = respData.payNo;
+                  order.payment.paymentMethod = "Balance";
+                  that.remark = respData.remark;
+                  that.itemDetails.itemId = respData.itemId;
+                  order.delivery.address = respData.deliveryInfo
+                  that.orderInfo.delivery.trackingInfo.deliveryCompany = respData.deliveryCompany
+                  that.orderInfo.delivery.trackingInfo.trackingNo = respData.trackingNo
+                  that.orderInfo.delivery.trackingInfo.deliveryTime = respData.deliveryTime
+                  that.orderInfo.evaluation.seller = respData.sellerEvaluation
+                  that.orderInfo.evaluation.buyer = respData.buyerEvaluation
+                  break;
+              }
+            } else {
+              that.showAll = false;
+              that.$alert(resp.data.description, resp.data.message, {
+                confirmButtonText: "OK",
+              });
             }
-          } else {
+            console.log(respData);
+          })
+          .catch((err) => {
             that.showAll = false;
             that.$alert(resp.data.description, resp.data.message, {
               confirmButtonText: "OK",
             });
-          }
-          console.log(respData);
-        })
-        .catch((err) => {
-          that.showAll = false;
-          that.$alert(resp.data.description, resp.data.message, {
-            confirmButtonText: "OK",
           });
-        });
       if (this.itemDetails.itemId == "") {
         return;
       }
       await this.axios
-        .get("http://localhost:8081/item/queryOneItem", {
-          params: { itemId: this.itemDetails.itemId },
-        })
-        .then((resp) => {
-          var respData = resp.data.data;
-          console.log(respData);
-          that.itemDetails.itemTitle = respData.itemTitle;
-          that.itemDetails.pic = respData.itemImage;
-          that.itemDetails.itemPrice = respData.itemPrice
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          .get("http://localhost:8081/item/queryOneItem", {
+            params: {itemId: this.itemDetails.itemId},
+          })
+          .then((resp) => {
+            var respData = resp.data.data;
+            console.log(respData);
+            that.itemDetails.itemTitle = respData.itemTitle;
+            that.itemDetails.pic = respData.itemImage;
+            that.itemDetails.itemPrice = respData.itemPrice
+          })
+          .catch((err) => {
+            console.log(err);
+          });
     } else if (this.$route.path == "/Order/Create") {
       if (this.$route.query.id == "" || this.$route.query.id == null) {
         that.showAll = false;
@@ -1059,43 +1067,43 @@ export default {
       }
       this.step = 0;
       await this.axios
-        .get("http://localhost:8081/item/queryOneItem", {
-          params: { itemId: this.$route.query.id },
-        })
-        .then((resp) => {
-          if (resp.data.code == 0) {
-            var respData = resp.data.data;
-            console.log(respData);
-            that.itemDetails.itemTitle = respData.itemTitle;
-            that.itemDetails.pic = respData.itemImage;
-            that.itemDetails.itemPrice = respData.itemPrice
-            if (respData.itemStatus == "SOLD") {
+          .get("http://localhost:8081/item/queryOneItem", {
+            params: {itemId: this.$route.query.id},
+          })
+          .then((resp) => {
+            if (resp.data.code == 0) {
+              var respData = resp.data.data;
+              console.log(respData);
+              that.itemDetails.itemTitle = respData.itemTitle;
+              that.itemDetails.pic = respData.itemImage;
+              that.itemDetails.itemPrice = respData.itemPrice
+              if (respData.itemStatus == "SOLD") {
+                that.showAll = false;
+                this.$alert("This item has sold!", "Error", {
+                  confirmButtonText: "OK",
+                  callback: (action) => {
+                    that.$router.push({
+                      path: "/ItemDetail",
+                      query: {
+                        id: this.$route.query.id,
+                      },
+                    });
+                  },
+                });
+                return;
+              }
+            } else {
               that.showAll = false;
-              this.$alert("This item has sold!", "Error", {
+              this.$alert(resp.data.description, resp.data.message, {
                 confirmButtonText: "OK",
                 callback: (action) => {
                   that.$router.push({
-                    path: "/ItemDetail",
-                    query: {
-                      id: this.$route.query.id,
-                    },
+                    path: "/",
                   });
                 },
               });
-              return;
             }
-          } else {
-            that.showAll = false;
-            this.$alert(resp.data.description, resp.data.message, {
-              confirmButtonText: "OK",
-              callback: (action) => {
-                that.$router.push({
-                  path: "/",
-                });
-              },
-            });
-          }
-        });
+          });
     }
   },
 };
