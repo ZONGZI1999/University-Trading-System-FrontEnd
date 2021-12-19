@@ -85,6 +85,7 @@ export default {
         // use to store result showing to user
       ],
       stepToText:[
+        { text: 'ON_SELL', value: '8'},
         { text: 'CREATED', value: '0'},
         { text: 'PAID', value: '1'},
         { text: 'ON_DELIVERY', value: '2'},
@@ -94,6 +95,7 @@ export default {
         { text: 'CLOSED', value: '7'},
       ],
       valueToText: {
+        8: "ON_SELL",
         0: "CREATED",
         1: "PAID",
         2: "ON_DELIVERY",

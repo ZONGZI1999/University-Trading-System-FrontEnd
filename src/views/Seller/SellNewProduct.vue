@@ -13,7 +13,7 @@
               >
                 <template slot="error">
                   <div style="text-align: center;">
-                    NO IMAGE GIVEN <br/>
+                    <img :src="errPath"  alt="100px"/> <br />
                     Please Upload Image
                   </div>
                 </template>
@@ -50,7 +50,7 @@
                 >
                   <el-button size="small" type="primary">Upload Photo</el-button>
                   <div slot="tip" class="el-upload__tip">
-                    只能上传jpg/png文件，且不超过500kb
+                    Only can upload JPG/PNG file.
                   </div>
                 </el-upload>
               </el-container>
@@ -190,12 +190,8 @@ export default {
       ],
       imageURL: [],
       descriptions: [
-        "【brushed Microfiber Made】 4-piece Size Twin Bed Sheet Set: 2 Pillow Cases and a Top Sheet and Fitted Sheet. Top Sheet Fitted Sheet 2 Pillow Cases (20” X 30”). Spaceship Rockets Print Kids Bedding",
-        "【KFZ COSMIC PLANET PRINTED BEDDING】 The Bed Sheet Sets include 1 Flat Sheet, 1 Fitted Sheet, and 2 Pillow Cases Twin Sheets Set Blue Color for Girls Kids Adults",
-        "【TOP-GRADE MATERIAL】This polyester brushed microfiber fabric girls bed sheet set is super silky soft, luxuriously comfortable, and wholly breathable for all-season use. The Egyptian-quality fiber ensures that the full sheets sets are resistant to wrinkles, stains, and fading. Even more skin-friendly than 100% cotton sheets, these full bed sheets will keep you fresh and cool in summer and cozy-warm in winter. The top sheet is also suitable for use as a coverlet on summer days.",
-        "【DEEP-POCKET SHEET SETS】The fitted bed sheet included is designed with a deep pocket, allowing it to comfortably fit any mattress less than 15” in thickness. With a matching pattern on the top flat sheet and European envelope-style pillowcases, you can easily upgrade your bedding with a distinctive style in no time at all. The bedding sets are 100% soft, meaning they are for kids.",
-        "【CUTE DESIGN AND GENEROUS FITS】Our twin size sheets are designed with very realistic solar planets on navy blue background pattern. We included all the planets in solar system. It is suitable for use in any type of room, including in the bedroom, as kids’ room décor, especially for the little ones who are keen on astronomical science. The cool and fashionable design is a delightful and colorful addition to your home décor.",
-      ],
+        ],
+      errPath: require("@/assets/forbidden.png")
     };
   },
   methods: {
@@ -236,9 +232,14 @@ export default {
       console.log("post new one");
       console.log();
       var image = this.imageURL;
+      var isNum=/^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
+      if (!isNum.test(this.price+"")){
+        this.$message.error("Price Format is error!")
+        return ;
+      }
       var sendData = {
         itemTitle: this.title,
-        itemPrice: Number(this.price) * 100 + "",
+        itemPrice: Math.round(Number(this.price) * 100) + "",
         itemDescription: this.descriptions,
         itemImage: image,
       };
@@ -294,6 +295,7 @@ export default {
                     that.title = respData.itemTitle
                     that.price = respData.itemPrice/100.00
                     that.descriptions = respData.itemDescription
+                    that.imageURL = respData.itemImage
                   } else {
                     this.$message.error(resp.data.message + ": " + resp.data.description)
                     this.errDesc = resp.data.message + ": " + resp.data.description

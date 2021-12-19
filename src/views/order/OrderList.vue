@@ -28,6 +28,7 @@
                     :preview-src-list="scope.row.pic.picList">
                 <template slot="error">
                   <div style="text-align: center;">
+                    <img :src="errPath"  alt="100px"/> <br />
                     NO IMAGE GIVEN
                   </div>
                 </template>
@@ -91,6 +92,7 @@
         orderList: [
 
         ],
+        errPath: require("@/assets/forbidden.png")
       }
     },
      methods: {

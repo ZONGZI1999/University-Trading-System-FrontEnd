@@ -13,7 +13,10 @@
                       :preview-src-list="picList"
                   >
                     <template slot="error">
-                      ERROR
+                      <div style="text-align: center;">
+                        <img :src="errPath"  alt="100px"/> <br />
+                        NO IMAGE GIVEN
+                      </div>
                     </template>
                   </el-image>
                 </div>
@@ -37,13 +40,13 @@
                 <div class="price-title">
                   $ {{price}}
                 </div>
-                <el-tooltip class="item" effect="dark" content="Star" placement="bottom">
-                  <el-button type="warning" icon="el-icon-star-off" circle></el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="Add to Shopping Cart" placement="bottom">
-                  <el-button type="info" icon="el-icon-shopping-cart-2" circle></el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="dark" content="Chat with Seller" placement="bottom">
+<!--                <el-tooltip class="item" effect="dark" content="Star" placement="bottom">-->
+<!--                  <el-button type="warning" icon="el-icon-star-off" circle></el-button>-->
+<!--                </el-tooltip>-->
+<!--                <el-tooltip class="item" effect="dark" content="Add to Shopping Cart" placement="bottom">-->
+<!--                  <el-button type="info" icon="el-icon-shopping-cart-2" circle></el-button>-->
+<!--                </el-tooltip>-->
+                <el-tooltip class="item" effect="dark" :content="'Chat with Seller: ' + seller + '@xmu.edu.my'" placement="bottom">
                   <el-button type="primary" icon="el-icon-chat-line-round" circle></el-button>
                 </el-tooltip>
                 <el-button  :disabled="itemStatus == 'SOLD'" type="success"  round @click="buyClick">Buy</el-button>
@@ -131,7 +134,8 @@
         sellerName: "",
         seller: "",
         itemId: 0,
-        itemStatus: ""
+        itemStatus: "",
+        errPath: require("@/assets/forbidden.png")
       }
     },
     methods:{

@@ -34,25 +34,6 @@
         >
           <template slot="title">
             Order Details
-            <el-popover
-              placement="right-start"
-              title="Timeline"
-              width="200"
-              trigger="hover"
-            >
-              <el-timeline :reverse="reverse">
-                <el-timeline-item
-                  v-for="(activity, index) in activities"
-                  :key="index"
-                  :timestamp="activity.timestamp"
-                >
-                  {{ activity.content }}
-                </el-timeline-item>
-              </el-timeline>
-              <el-button icon="el-icon-time" size="mini" slot="reference"
-                >Timeline</el-button
-              >
-            </el-popover>
           </template>
           <!-- Current State -->
           <el-descriptions-item :span="step < 2 ? 2 : 1">
@@ -843,7 +824,7 @@ export default {
           this.showModule.deliveryInfo = true;
           this.textIsReadOnly = true;
           this.buttonName.button1 = this.orderInfo.orderDetails.buyer === localStorage.getItem("studentId") ? "Confirm Order" : "";
-          this.buttonName.button2 = "Apply Refund";
+          this.buttonName.button2 = "";
           break;
         case 4:
           this.elStep = 4;

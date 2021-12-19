@@ -49,7 +49,7 @@
     <el-divider>My Recent Evaluation</el-divider>
 
     <el-table :data="evaluationData" style="width: 100%" max-height="250">
-      <el-table-column fixed prop="orderCreateDate" label="Evaluation Date" width="200">
+      <el-table-column fixed prop="orderCreateDate" label="Evaluation Date" sortable width="200">
       </el-table-column>
       <el-table-column prop="itemTitle" label="Item Title" width="120"> </el-table-column>
       <el-table-column prop="evaluationFromBuyer" label="Evaluation From Buyer"></el-table-column>
