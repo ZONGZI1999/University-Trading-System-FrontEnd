@@ -10,7 +10,7 @@
           <el-input type="password" placeholder="Please Enter Your Password" v-model="form.password"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" plain @click="onLogin">Login</el-button>
+          <el-button type="primary" plain @click="onLogin" :loading="isLoading">Login</el-button>
           <el-button type="info" plain>?</el-button>
         </el-form-item>
       </div>
@@ -33,6 +33,7 @@ export default {
         username: '',
         password: ''
       },
+      isLoading: false,
       rules: {
         username: [
           {required: true, message: 'Student ID cannot be empty!', trigger: 'blur'}
@@ -47,10 +48,14 @@ export default {
   },
   methods: {
     onLogin() {
+      this.isLoading = true
+      var that = this
       var sendData = {}
       sendData['studentId'] = this.form.username
+      sendData['password'] = this.form.password
       this.axios.post("http://localhost:8081/account/login", sendData)
           .then(resp => {
+            that.isLoading = false
             if (resp.data.code == 0) {
               var key = resp.data.data.tokenName
               var token = resp.data.data.tokenValue
@@ -59,7 +64,13 @@ export default {
               var ref = this.$route.query.ref == null ? "/My" : this.$route.query.ref;
               this.$router.push({path: ref})
               this.$message.success("Successfully Login!")
+            } else {
+              this.$message.error(resp.data.description)
             }
+          })
+          .catch(err => {
+            that.isLoading = false;
+            this.$message.error("Internal Error!")
           })
     },
     logout() {

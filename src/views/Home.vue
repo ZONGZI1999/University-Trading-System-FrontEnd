@@ -26,7 +26,7 @@
             <span>{{ item.title }}</span>
             <div class="bottom clearfix">
               <time class="time">{{ item.price }}</time>
-              <el-button type="text" class="button">View</el-button>
+              <el-button type="text" class="button" @click="viewItem(item.id)">View</el-button>
             </div>
           </div>
         </el-card>
